@@ -347,7 +347,8 @@ progError:"Error: {msg}",progNoMemory:"El navegador no pudo procesar la imagen."
 txtCreatedBy:"Creado por",txtLicense:"Licencia MIT",txtSource:"Código fuente",
 alertNoImage:"Primero sube al menos una imagen.",alertInvalidPaper:"Configuración de papel inválida.",
 alertInvalidGrid:"La cuadrícula de imágenes es demasiado pequeña.",alertConfirmPages:"Se generarán {n} páginas. ¿Continuar?",
-alertTransparencyPng:"El fondo transparente requiere PNG. Se cambió automáticamente.",alertTooBig:'La imagen "{name}" es demasiado grande.'},
+alertTransparencyPng:"El fondo transparente requiere PNG. Se cambió automáticamente.",alertTooBig:'La imagen "{name}" es demasiado grande.',
+alertPopupBlocked:"Activa las ventanas emergentes para imprimir."},
 en:{sub:"Upload images, split the poster into sheets, and download a print-ready PDF.",
 titleImages:"Images",titlePaper:"Paper",titleLayout:"Poster layout",
 titleAdvanced:"Advanced Section",titleSuper:"Super Advanced Section",badgePrecision:"Precision & Quality",
@@ -381,7 +382,8 @@ progError:"Error: {msg}",progNoMemory:"The browser could not process the image."
 txtCreatedBy:"Created by",txtLicense:"MIT License",txtSource:"Source code",
 alertNoImage:"Upload at least one image first.",alertInvalidPaper:"Invalid paper configuration.",
 alertInvalidGrid:"Image grid is too small.",alertConfirmPages:"{n} pages will be generated. Continue?",
-alertTransparencyPng:"Transparent background requires PNG. Switched automatically.",alertTooBig:'Image "{name}" is too large.'},
+alertTransparencyPng:"Transparent background requires PNG. Switched automatically.",alertTooBig:'Image "{name}" is too large.',
+alertPopupBlocked:"Enable pop-ups to print."},
 pt:{sub:"Envie imagens, divida o pôster em folhas e baixe um PDF pronto para imprimir.",
 titleImages:"Imagens",titlePaper:"Papel",titleLayout:"Layout do pôster",
 titleAdvanced:"Seção Avançada",titleSuper:"Seção Super Avançada",badgePrecision:"Precisão & Qualidade",
@@ -415,7 +417,8 @@ progError:"Erro: {msg}",progNoMemory:"O navegador não pôde processar a imagem.
 txtCreatedBy:"Criado por",txtLicense:"Licença MIT",txtSource:"Código-fonte",
 alertNoImage:"Envie pelo menos uma imagem primeiro.",alertInvalidPaper:"Configuração de papel inválida.",
 alertInvalidGrid:"A grade de imagens é muito pequena.",alertConfirmPages:"Serão geradas {n} páginas. Continuar?",
-alertTransparencyPng:"Fundo transparente requer PNG.",alertTooBig:'A imagem "{name}" é muito grande.'},
+alertTransparencyPng:"Fundo transparente requer PNG.",alertTooBig:'A imagem "{name}" é muito grande.',
+alertPopupBlocked:"Ative pop-ups para imprimir."},
 fr:{sub:"Importez des images, divisez l'affiche en feuilles et téléchargez un PDF prêt à imprimer.",
 titleImages:"Images",titlePaper:"Papier",titleLayout:"Mise en page",
 titleAdvanced:"Section Avancée",titleSuper:"Section Super Avancée",badgePrecision:"Précision & Qualité",
@@ -449,7 +452,8 @@ progError:"Erreur : {msg}",progNoMemory:"Le navigateur n'a pas pu traiter l'imag
 txtCreatedBy:"Créé par",txtLicense:"Licence MIT",txtSource:"Code source",
 alertNoImage:"Importez d'abord au moins une image.",alertInvalidPaper:"Configuration de papier invalide.",
 alertInvalidGrid:"La grille d'images est trop petite.",alertConfirmPages:"{n} pages seront générées. Continuer ?",
-alertTransparencyPng:"Le fond transparent nécessite PNG.",alertTooBig:'L\'image "{name}" est trop grande.'},
+alertTransparencyPng:"Le fond transparent nécessite PNG.",alertTooBig:'L\'image "{name}" est trop grande.',
+alertPopupBlocked:"Activez les pop-ups pour imprimer."},
 de:{sub:"Bilder hochladen, Poster in Blätter aufteilen und druckfertige PDF herunterladen.",
 titleImages:"Bilder",titlePaper:"Papier",titleLayout:"Poster-Layout",
 titleAdvanced:"Erweiterte Sektion",titleSuper:"Super-Erweiterte Sektion",badgePrecision:"Präzision & Qualität",
@@ -483,7 +487,8 @@ progError:"Fehler: {msg}",progNoMemory:"Der Browser konnte das Bild nicht verarb
 txtCreatedBy:"Erstellt von",txtLicense:"MIT-Lizenz",txtSource:"Quellcode",
 alertNoImage:"Laden Sie zuerst mindestens ein Bild hoch.",alertInvalidPaper:"Ungültige Papierkonfiguration.",
 alertInvalidGrid:"Das Bildraster ist zu klein.",alertConfirmPages:"{n} Seiten werden erstellt. Fortfahren?",
-alertTransparencyPng:"Transparenter Hintergrund erfordert PNG.",alertTooBig:'Das Bild "{name}" ist zu groß.'}};
+alertTransparencyPng:"Transparenter Hintergrund erfordert PNG.",alertTooBig:'Das Bild "{name}" ist zu groß.',
+alertPopupBlocked:"Aktivieren Sie Pop-ups zum Drucken."}};
 
 let LANG="en";
 function detectLang(){const l=(navigator.language||navigator.userLanguage||"en").toLowerCase().slice(0,2);return I18N[l]?l:"en";}
@@ -906,50 +911,17 @@ function imprimirViaNavegador(){
   for(let i=0; i<imgs.length; i++){
     html += '<div class="pagina"><img src="' + imgs[i] + '" alt=""></div>';
   }
+  html += '<script>window.onload=function(){setTimeout(function(){window.focus();window.print();},300);};<\/script>';
   html += '</body></html>';
 
-  const iframe = document.createElement("iframe");
-  iframe.style.cssText = "position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden";
-  document.body.appendChild(iframe);
-
-  const doc = iframe.contentWindow.document;
-  doc.open();
-  doc.write(html);
-  doc.close();
-
-  const dispararImpresion = () => {
-    setTimeout(() => {
-      try {
-        iframe.contentWindow.focus();
-        iframe.contentWindow.print();
-      } catch(e){ console.error(e); }
-      setTimeout(() => {
-        if(document.body.contains(iframe)) document.body.removeChild(iframe);
-      }, 60000);
-    }, 400);
-  };
-
-  const esperarImgs = () => {
-    const all = doc.querySelectorAll("img");
-    if(all.length === 0){ dispararImpresion(); return; }
-    let cargadas = 0;
-    let disparado = false;
-    const intentar = () => {
-      if(disparado) return;
-      disparado = true;
-      dispararImpresion();
-    };
-    all.forEach(img => {
-      if(img.complete){ cargadas++; if(cargadas === all.length) intentar(); }
-      else {
-        img.onload = () => { cargadas++; if(cargadas === all.length) intentar(); };
-        img.onerror = () => { cargadas++; if(cargadas === all.length) intentar(); };
-      }
-    });
-    setTimeout(intentar, 3000);
-  };
-
-  setTimeout(esperarImgs, 150);
+  const win = window.open("", "_blank");
+  if(!win){
+    alert(t("alertPopupBlocked"));
+    return;
+  }
+  win.document.open();
+  win.document.write(html);
+  win.document.close();
 }
 
 function abrirDialogoImpresion(pdf){
@@ -1042,7 +1014,11 @@ function ejecutarGeneracion(nombreFinal,L,grid,total){
           modoImpresion = false;
           els.prog.textContent = t("progPrinting");
           setTimeout(function(){els.prog.textContent="";els.barWrap.style.display="none";},3500);
-          abrirDialogoImpresion(pdf);
+          if(esMovil()){
+            imprimirViaNavegador();
+          } else {
+            abrirDialogoImpresion(pdf);
+          }
         }else{
           pdf.save(nombreFinal+"_poster.pdf");
           ultimoPdf = pdf;
