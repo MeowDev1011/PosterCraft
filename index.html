@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PosterCraft • Free Poster Maker</title>
+<link rel="icon" type="image/png" href="postercraft_logo.png">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/4.2.1/jspdf.umd.min.js"></script>
+<style>
+*{box-sizing:border-box}:root{--bg:#0f1115;--card:#161a22;--card2:#1e2430;--line:#2b3342;--txt:#e8eaed;--dim:#98a2b3;--acc:#4f8cff;--ok:#39d98a;--warn:#ffb020;--bad:#ff5c5c}
+html,body{height:100%}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--txt);font-size:13px}
+.app{display:grid;grid-template-columns:380px 1fr;min-height:100vh}@media(max-width:1000px){.app{grid-template-columns:1fr}}
+aside{background:var(--card);border-right:1px solid var(--line);padding:14px 12px 90px;overflow-y:auto;height:100vh}
+@media(max-width:1000px){aside{height:auto;border-right:none;border-bottom:1px solid var(--line)}}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:4px;min-height:40px}
+.brand-logo{height:40px;width:auto;display:block}
+.brand-svg{display:flex;align-items:center;gap:10px}
+.brand-icon{width:38px;height:38px;flex-shrink:0;filter:drop-shadow(0 2px 8px rgba(79,140,255,.35))}
+.brand-text{font-size:20px;font-weight:800;letter-spacing:-0.03em;line-height:1}
+.brand-accent{background:linear-gradient(135deg,#5b95ff 0%,#39d98a 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+.tagline{color:var(--dim);font-size:10px;margin-bottom:10px;letter-spacing:.02em;text-transform:uppercase;font-weight:600}
+.sub{color:var(--dim);font-size:11px;margin-bottom:14px;line-height:1.4}
+.lang-bar{display:flex;gap:6px;align-items:center;margin-bottom:10px;background:#0d1017;border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+.lang-bar select{flex:1;background:transparent;border:0;color:var(--txt);font-size:12px;outline:none;cursor:pointer}
+.lang-bar .ic{color:var(--dim);flex-shrink:0}
+.card{background:var(--card2);border:1px solid var(--line);border-radius:9px;padding:10px;margin-bottom:9px}
+.card h2{font-size:12px;margin:0 0 8px;color:var(--acc);font-weight:600;display:flex;align-items:center;gap:6px}
+.card h2 .ic{flex-shrink:0}
+label{display:block;font-size:11px;color:var(--dim);margin:0 0 3px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:7px}.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px}.row4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px}
+.field{margin-bottom:7px}.field:last-child{margin-bottom:0}
+input[type=number],input[type=text],select{width:100%;background:#0d1017;border:1px solid var(--line);color:var(--txt);border-radius:6px;padding:6px 7px;font-size:12px;outline:none}
+input:focus,select:focus{border-color:var(--acc)}input[type=range]{width:100%;accent-color:var(--acc);height:16px}
+input[type=color]{width:100%;height:28px;background:#0d1017;border:1px solid var(--line);border-radius:6px;padding:2px;cursor:pointer}
+input[type=file]{width:100%;background:#0d1017;border:1px dashed var(--line);color:var(--dim);border-radius:6px;padding:8px;font-size:11px;cursor:pointer}
+input[type=file]::file-selector-button{background:var(--acc);color:#fff;border:0;border-radius:4px;padding:4px 8px;margin-right:7px;cursor:pointer}
+.check{display:flex;align-items:center;gap:6px;font-size:11.5px;margin:4px 0}.check input{accent-color:var(--acc);width:13px;height:13px}
+.val{float:right;color:var(--acc);font-variant-numeric:tabular-nums;font-size:11px}
+main{padding:16px;display:flex;flex-direction:column;gap:12px;align-items:center;overflow-y:auto;height:100vh}
+@media(max-width:1000px){main{height:auto;padding:12px}}
+.infobar{width:100%;max-width:900px;display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:6px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px}
+.stat{background:#0d1017;border-radius:6px;padding:6px 8px}.stat span{display:block;font-size:9.5px;color:var(--dim);text-transform:uppercase;margin-bottom:2px}
+.stat b{font-size:13px;font-weight:600}.stat b.small{font-size:11.5px}.bad{color:var(--bad)}.warn{color:var(--warn)}.ok{color:var(--ok)}
+.stage{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px;display:flex;justify-content:center;width:100%;max-width:900px;overflow:hidden}
+.stage canvas{display:block;max-width:none;border-radius:3px;box-shadow:0 4px 18px rgba(0,0,0,.5)}
+.tile-preview{width:100%;max-width:900px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px;display:none}
+.tile-preview h2{display:flex;align-items:center;gap:6px}
+.tile-grid{display:grid;gap:6px;margin-top:8px}.tile-grid canvas{width:100%;height:auto;border:1px solid var(--line);border-radius:4px;background:#000}
+button.go{width:100%;max-width:900px;background:linear-gradient(180deg,#5b95ff,#3d78e8);color:#fff;border:0;padding:12px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+button.go:hover{filter:brightness(1.08)}button.go:disabled{opacity:.5;cursor:not-allowed}
+button.ghost{width:100%;max-width:900px;background:#2b3342;color:var(--txt);border:0;padding:10px;border-radius:9px;font-size:12.5px;cursor:pointer;margin-top:6px;display:flex;align-items:center;justify-content:center;gap:8px}
+button.ghost:hover{background:#374151}
+.prog{font-size:11.5px;color:var(--dim);text-align:center;min-height:15px}
+.bar{width:100%;max-width:900px;height:5px;background:#1e2430;border-radius:3px;overflow:hidden;display:none}
+.bar div{height:100%;background:linear-gradient(90deg,#4f8cff,#39d98a);width:0%;transition:width .12s}
+.note{font-size:10px;color:var(--dim);line-height:1.4;margin-top:4px}.hidden{display:none !important}
+details.card{cursor:default}details.card>summary{list-style:none;cursor:pointer;font-size:12px;font-weight:600;color:var(--acc);display:flex;align-items:center;gap:6px;outline:none}
+details.card>summary::-webkit-details-marker{display:none}
+details.card>summary::before{content:"▸";transition:transform .15s;display:inline-block;font-size:10px}
+details.card[open]>summary::before{transform:rotate(90deg)}
+details.card .details-body{margin-top:9px;padding-top:9px;border-top:1px solid var(--line)}
+.badge{background:var(--acc);color:#fff;font-size:9px;padding:1px 5px;border-radius:4px;margin-left:auto}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:9999;padding:18px}
+.modal{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:20px;max-width:400px;width:100%;box-shadow:0 18px 55px rgba(0,0,0,.6)}
+.modal h2{margin:0 0 5px;font-size:15px;display:flex;align-items:center;gap:8px}.modal p{margin:0 0 12px;color:var(--dim);font-size:12px}
+.modal code{background:#0d1017;padding:2px 5px;border-radius:4px;font-size:11px;color:var(--acc)}
+.modal input{width:100%;background:#0d1017;border:1px solid var(--line);color:var(--txt);border-radius:7px;padding:9px 11px;font-size:13.5px;outline:none;margin-bottom:5px}
+.modal .preview-name{font-size:11px;color:var(--dim);margin-bottom:12px;min-height:15px;word-break:break-all}
+.modal .preview-name b{color:var(--ok)}
+.modal .btns{display:flex;gap:7px;justify-content:flex-end}
+.modal button{padding:8px 14px;border-radius:7px;border:0;font-size:12.5px;font-weight:600;cursor:pointer}
+.modal .btn-cancel{background:#2b3342;color:var(--txt)}.modal .btn-ok{background:linear-gradient(180deg,#5b95ff,#3d78e8);color:#fff;display:flex;align-items:center;gap:6px}
+.img-list{max-height:120px;overflow-y:auto;background:#0d1017;border-radius:6px;padding:5px;font-size:11px;margin-top:5px}
+.img-list div{display:flex;justify-content:space-between;padding:2px 4px;border-bottom:1px solid var(--line)}
+.img-list div:last-child{border-bottom:0}
+.img-list .name{color:var(--dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px}
+.img-list .size{color:var(--acc);font-size:10px}
+.paper-search{padding:8px 10px !important;font-size:12px !important}
+.paper-list{max-height:280px;overflow-y:auto;background:#0d1017;border:1px solid var(--line);border-radius:6px;margin-top:5px;display:none}
+.paper-list.open{display:block}
+.paper-item{display:flex;align-items:center;gap:8px;padding:7px 9px;cursor:pointer;border-bottom:1px solid var(--line);font-size:12px;transition:background .1s}
+.paper-item:last-child{border-bottom:0}.paper-item:hover,.paper-item.active{background:#1a2130}
+.paper-item .em{flex-shrink:0;width:22px;height:22px;display:flex;align-items:center;justify-content:center;color:var(--acc)}
+.paper-item .main{flex:1;min-width:0}
+.paper-item .medida{color:var(--txt);font-weight:600;font-size:12px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.paper-item .ref{color:var(--dim);font-size:10.5px;display:block;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.paper-item .tipo{color:var(--acc);font-size:9px;text-transform:uppercase;letter-spacing:.05em;flex-shrink:0;background:#0d1017;padding:2px 6px;border-radius:3px;font-weight:600}
+.paper-selected{font-size:11.5px;color:var(--txt);margin-top:6px;padding:8px 10px;background:#0d1017;border-radius:6px;display:flex;align-items:center;gap:8px;border:1px solid var(--line);line-height:1.35}
+.paper-selected .em{flex-shrink:0;width:24px;height:24px;display:flex;align-items:center;justify-content:center;color:var(--acc)}
+.paper-selected b{color:var(--acc);font-size:12px}
+svg.ic{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;flex-shrink:0}
+svg.ic-lg{width:16px;height:16px}
+svg.ic-xl{width:18px;height:18px}
+.footer{width:100%;max-width:900px;margin-top:16px;padding:14px 16px;background:var(--card);border:1px solid var(--line);border-radius:10px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 14px;font-size:12px;color:var(--dim)}
+.footer-credit{display:flex;align-items:center;gap:6px;white-space:nowrap}
+.footer-credit a{color:var(--txt);text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:5px;transition:color .15s}
+.footer-credit a:hover{color:var(--acc)}
+.footer-credit a svg{width:15px;height:15px;fill:currentColor;stroke:none}
+.footer-btn{display:inline-flex;align-items:center;gap:6px;background:#0d1017;border:1px solid var(--line);color:var(--txt);padding:6px 11px;border-radius:7px;font-size:11.5px;font-weight:600;text-decoration:none;transition:all .15s;cursor:pointer}
+.footer-btn:hover{background:#1a2130;border-color:var(--acc);color:var(--acc)}
+.footer-btn svg{width:14px;height:14px;flex-shrink:0}
+.footer-btn svg.ic-fill{fill:currentColor;stroke:none}
+.footer-sep{width:1px;height:16px;background:var(--line)}
+@media(max-width:520px){.footer-sep{display:none}.footer{flex-direction:column;gap:8px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside>
+<div class="brand">
+<img src="postercraft_logo.png" alt="PosterCraft" class="brand-logo"
+     onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+<div class="brand-svg" style="display:none">
+<svg class="brand-icon" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="pcg" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+<stop stop-color="#5b95ff"/><stop offset="1" stop-color="#39d98a"/>
+</linearGradient>
+</defs>
+<rect x="3" y="3" width="34" height="34" rx="7" fill="url(#pcg)"/>
+<path d="M3 16 H37 M3 24 H37 M16 3 V37 M24 3 V37" stroke="#0f1115" stroke-width="1.3" opacity="0.55"/>
+<rect x="24" y="24" width="13" height="13" rx="2" fill="#fff" opacity="0.95"/>
+</svg>
+<span class="brand-text">Poster<span class="brand-accent">Craft</span></span>
+</div>
+</div>
+<div class="tagline">Free Poster Maker</div>
+<div class="sub" data-i18n="app.subtitle">Sube imágenes, divide el póster en hojas y descarga un PDF listo para imprimir y pegar.</div>
+
+<div class="lang-bar">
+<svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+<select id="langSelect">
+<option value="es">Español</option><option value="en">English</option><option value="pt">Português</option><option value="fr">Français</option><option value="de">Deutsch</option>
+</select></div>
+
+<div class="card"><h2><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span data-i18n="sec.1">1 · Imágenes</span></h2>
+<input type="file" id="file" accept="image/*" multiple>
+<div class="note" id="imgInfo" data-i18n="img.none">Sin imágenes cargadas</div>
+<div class="img-list" id="imgList"></div></div>
+
+<div class="card"><h2><svg class="ic" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span data-i18n="sec.2">2 · Papel</span></h2>
+<div class="field"><label data-i18n="paper.label">Tamaño de hoja</label>
+<input type="text" id="paperSearch" class="paper-search" data-i18n-placeholder="paper.search" placeholder="Buscar: A4, carta, 4x6, foto..." autocomplete="off">
+<input type="hidden" id="papel" value="A4 · 210 × 297 mm">
+<div class="paper-list" id="paperList"></div><div class="paper-selected" id="paperSelected"></div></div>
+<div class="row hidden" id="customWrap">
+<div class="field"><label data-i18n="paper.width">Ancho (mm)</label><input type="number" id="customW" value="210" min="20"></div>
+<div class="field"><label data-i18n="paper.height">Alto (mm)</label><input type="number" id="customH" value="297" min="20"></div></div>
+<div class="field"><label data-i18n="paper.orientation">Orientación</label><select id="orient">
+<option value="p" data-i18n="paper.portrait">Vertical</option><option value="l" data-i18n="paper.landscape">Horizontal</option></select></div></div>
+
+<div class="card"><h2><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span data-i18n="sec.3">3 · Distribución del póster</span></h2>
+<div class="field"><label data-i18n="dist.mode">Modo</label><select id="modo">
+<option value="paginas" data-i18n="dist.byPages">Por número de hojas</option>
+<option value="final" data-i18n="dist.bySize">Por tamaño final</option></select></div>
+<div id="paginasWrap"><div class="row">
+<div class="field"><label data-i18n="dist.cols">Columnas</label><input type="number" id="cols" value="2" min="1" max="40"></div>
+<div class="field"><label data-i18n="dist.rows">Filas</label><input type="number" id="rows" value="2" min="1" max="40"></div></div></div>
+<div id="finalWrap" class="hidden"><div class="row">
+<div class="field"><label data-i18n="dist.finalW">Ancho final (cm)</label><input type="number" id="finalW" value="60" min="5"></div>
+<div class="field"><label data-i18n="dist.finalH">Alto final (cm)</label><input type="number" id="finalH" value="80" min="5"></div></div></div></div>
+
+<details class="card"><summary><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span data-i18n="sec.4">Configuración avanzada</span></summary><div class="details-body">
+<div class="field"><label><span data-i18n="adv.overlap">Solape entre hojas (mm)</span> <span class="val" id="solapeVal">10</span></label>
+<input type="range" id="solape" min="0" max="40" value="10"></div>
+<div class="note" style="margin-bottom:8px" data-i18n="adv.overlapNote">Zona repetida en los bordes para pegar sin cortar contenido.</div>
+<label style="font-weight:600;color:var(--acc);margin-bottom:5px" data-i18n="adv.margins">Márgenes individuales (mm)</label>
+<div class="row4" style="margin-bottom:8px">
+<div class="field"><label data-i18n="adv.mTop">Sup.</label><input type="number" id="mTop" value="10" min="0" max="50"></div>
+<div class="field"><label data-i18n="adv.mBottom">Inf.</label><input type="number" id="mBottom" value="10" min="0" max="50"></div>
+<div class="field"><label data-i18n="adv.mLeft">Izq.</label><input type="number" id="mLeft" value="10" min="0" max="50"></div>
+<div class="field"><label data-i18n="adv.mRight">Der.</label><input type="number" id="mRight" value="10" min="0" max="50"></div></div>
+<label style="font-weight:600;color:var(--acc);margin-bottom:5px" data-i18n="adv.compose">Composición de imágenes</label>
+<div class="note" style="margin-bottom:5px" data-i18n="adv.composeNote">1 imagen → cubre todo el póster y se divide en hojas. Varias → cuadrícula.</div>
+<div class="row" style="margin-bottom:6px">
+<div class="field"><label data-i18n="adv.imgCols">Columnas img.</label><input type="number" id="imgCols" value="3" min="1" max="50"></div>
+<div class="field"><label data-i18n="adv.imgRows">Filas img.</label><input type="number" id="imgRows" value="3" min="1" max="50"></div></div>
+<div class="note" style="margin-bottom:6px"><span data-i18n="adv.cells">Celdas:</span> <b id="totalCeldas">9</b>.</div>
+<div class="row" style="margin-bottom:6px">
+<div class="field"><label data-i18n="adv.gap">Espaciado (mm)</label><input type="number" id="gap" value="2" min="0" max="30" step="0.5"></div>
+<div class="field"><label data-i18n="adv.border">Borde (mm)</label><input type="number" id="borde" value="0" min="0" max="10" step="0.5"></div></div>
+<div class="field"><label data-i18n="adv.fitCell">Encaje por celda</label><select id="ajusteImg">
+<option value="cover" data-i18n="adv.fitCover">Cubrir (recorta)</option>
+<option value="contain" data-i18n="adv.fitContain">Contener (completa)</option>
+<option value="stretch" data-i18n="adv.fitStretch">Estirar</option></select></div>
+<div class="field"><label data-i18n="adv.fitGlobal">Encaje global (1 imagen)</label><select id="ajuste">
+<option value="cover" data-i18n="adv.fitCover">Cubrir (recorta)</option>
+<option value="contain" data-i18n="adv.fitContain">Contener (completa)</option>
+<option value="stretch" data-i18n="adv.fitStretch">Estirar</option></select></div>
+<div class="field"><label data-i18n="adv.borderColor">Color de borde</label><input type="color" id="bordeColor" value="#ffffff"></div>
+<label style="font-weight:600;color:var(--acc);margin:8px 0 5px" data-i18n="adv.bg">Fondo</label>
+<div class="row">
+<div class="field"><label data-i18n="adv.bgColor">Color</label><input type="color" id="fondo" value="#ffffff"></div>
+<div class="field"><label>&nbsp;</label><div class="check"><input type="checkbox" id="transparente"><label for="transparente" style="margin:0" data-i18n="adv.transparent">Transparente</label></div></div></div>
+</div></details>
+
+<details class="card"><summary><svg class="ic" viewBox="0 0 24 24"><path d="M9 2v6L4 18a2 2 0 0 0 1.7 3h12.6A2 2 0 0 0 20 18L15 8V2"/><line x1="8" y1="2" x2="16" y2="2"/><line x1="7.5" y1="13" x2="16.5" y2="13"/></svg><span data-i18n="sec.5">Configuración experta</span> <span class="badge" data-i18n="sec.5.badge">calidad</span></summary><div class="details-body">
+<div class="row">
+<div class="field"><label data-i18n="exp.dpi">Resolución (PPP)</label><select id="dpi">
+<option value="96">96</option><option value="150">150</option><option value="200">200</option>
+<option value="300" selected>300</option><option value="400">400</option><option value="600">600</option><option value="1200">1200</option></select></div>
+<div class="field"><label data-i18n="exp.format">Formato</label><select id="formato">
+<option value="jpeg">JPEG</option><option value="png">PNG</option></select></div></div>
+<div class="field"><label><span data-i18n="exp.jpegQ">Calidad JPEG</span> <span class="val" id="jpegQVal">95%</span></label>
+<input type="range" id="jpegQ" min="50" max="100" value="95"></div>
+<div class="field"><label data-i18n="exp.compress">Compresión jsPDF</label><select id="compresion">
+<option value="SLOW">SLOW · HQ</option><option value="MEDIUM">MEDIUM</option>
+<option value="FAST">FAST</option><option value="NONE">NONE</option></select></div>
+<div class="check"><input type="checkbox" id="marcas" checked><label for="marcas" style="margin:0" data-i18n="exp.marks">Marcas de corte</label></div>
+<div class="row3">
+<div class="field"><label data-i18n="exp.thickness">Grosor (pt)</label><input type="number" id="marcasGrosor" value="0.2" min="0.1" max="2" step="0.1"></div>
+<div class="field"><label data-i18n="exp.length">Longitud (mm)</label><input type="number" id="marcasLong" value="5" min="2" max="15"></div>
+<div class="field"><label data-i18n="exp.color">Color</label><input type="color" id="marcasColor" value="#000000"></div></div>
+<div class="check"><input type="checkbox" id="numeros" checked><label for="numeros" style="margin:0" data-i18n="exp.numbers">Numerar páginas</label></div>
+</div></details>
+
+<button class="go" id="btnPdf" disabled>
+<svg class="ic-lg" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+<span data-i18n="btn.download">Descargar PDF</span></button>
+<button class="ghost" id="btnTiles" disabled>
+<svg class="ic" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+<span data-i18n="btn.preview">Ver vista previa de hojas</span></button>
+<button class="ghost" id="btnCancel" style="display:none;background:#e04848">
+<svg class="ic" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+<span data-i18n="btn.cancel">Cancelar generación</span></button>
+</aside>
+
+<main>
+<div class="infobar" id="info"></div>
+<div class="stage"><canvas id="preview" width="600" height="400"></canvas></div>
+<div class="tile-preview" id="tilePreview">
+<h2 style="font-size:12px;margin:0 0 8px;color:var(--acc)">
+<svg class="ic" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+<span data-i18n="tiles.title">Vista previa de cada hoja del PDF</span></h2>
+<div class="tile-grid" id="tileGrid"></div></div>
+<div class="bar" id="barWrap"><div id="bar"></div></div>
+<div class="prog" id="prog"></div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="footer">
+<span class="footer-credit">
+<span data-i18n="footer.createdBy">Creado por</span>
+<a href="https://github.com/MeowDev1011" target="_blank" rel="noopener">
+<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+MeowDev1011</a></span>
+<span class="footer-sep"></span>
+<a class="footer-btn" href="https://github.com/MeowDev1011/PosterCraft/blob/main/LICENSE" target="_blank" rel="noopener">
+<svg class="ic" viewBox="0 0 24 24"><path d="M16 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z"/><path d="M2 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
+<span data-i18n="footer.license">Licencia MIT</span></a>
+<a class="footer-btn" href="https://github.com/MeowDev1011/PosterCraft" target="_blank" rel="noopener">
+<svg class="ic-fill" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+<span data-i18n="footer.source">Código fuente</span></a>
+</footer>
+</main>
+</div>
+
+<div class="modal-overlay hidden" id="modalOverlay"><div class="modal">
+<h2><svg class="ic-lg" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg><span data-i18n="modal.title">Ponle nombre a tu creación</span></h2>
+<p><span data-i18n="modal.desc">Se guardará como</span> <code>{nombre}_poster.pdf</code></p>
+<input type="text" id="nombreInput" data-i18n-placeholder="modal.placeholder" placeholder="mi-poster" maxlength="80">
+<div class="preview-name" id="previewName"></div>
+<div class="btns">
+<button class="btn-cancel" id="modalCancel" data-i18n="modal.cancel">Cancelar</button>
+<button class="btn-ok" id="modalOk">
+<svg class="ic" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+<span data-i18n="modal.ok">Descargar PDF</span></button></div>
+</div></div>
+
+<script>
+/* ═══ SVG ICONS ═══ */
+const ICONS = {
+paper:'<svg class="ic" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',
+envelope:'<svg class="ic" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>',
+news:'<svg class="ic" viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8z"/></svg>',
+ruler:'<svg class="ic" viewBox="0 0 24 24"><path d="M2 12L12 2l10 10-10 10L2 12z"/><path d="M8 12h2M12 8v2M12 16v-2M16 12h-2"/></svg>',
+leaf:'<svg class="ic" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>',
+globe:'<svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
+flag:'<svg class="ic" viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>',
+factory:'<svg class="ic" viewBox="0 0 24 24"><path d="M2 20h20V9l-5 3V9l-5 3V9l-5 3V9l-5 3z"/><path d="M6 9V4h4v5"/></svg>',
+tree:'<svg class="ic" viewBox="0 0 24 24"><path d="M12 2L5 11h4l-4 6h6v5h2v-5h6l-4-6h4z"/></svg>',
+camera:'<svg class="ic" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>',
+photo:'<svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>',
+square:'<svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="1"/></svg>',
+palette:'<svg class="ic" viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>',
+megaphone:'<svg class="ic" viewBox="0 0 24 24"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>',
+settings:'<svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>'
+};
+
+/* ═══ i18n ═══ */
+const I18N = {
+es:{app:{title:"PosterCraft",subtitle:"Sube imágenes, divide el póster en hojas y descarga un PDF listo para imprimir y pegar."},
+"sec.1":"1 · Imágenes","sec.2":"2 · Papel","sec.3":"3 · Distribución del póster","sec.4":"Configuración avanzada","sec.5":"Configuración experta","sec.5.badge":"calidad",
+img:{none:"Sin imágenes cargadas",loaded:"{n} imagen(es) cargada(s)",error:"No se pudieron cargar las imágenes.",max:"Máximo 500 imágenes. Se cargarán las primeras 500."},
+paper:{label:"Tamaño de hoja",search:"Buscar: A4, carta, 4x6, foto...",width:"Ancho (mm)",height:"Alto (mm)",orientation:"Orientación",portrait:"Vertical",landscape:"Horizontal",noResults:"Sin resultados",more:"… y {n} más"},
+dist:{mode:"Modo",byPages:"Por número de hojas",bySize:"Por tamaño final",cols:"Columnas",rows:"Filas",finalW:"Ancho final (cm)",finalH:"Alto final (cm)"},
+adv:{overlap:"Solape entre hojas (mm)",overlapNote:"Zona repetida en los bordes para pegar sin cortar contenido.",margins:"Márgenes individuales (mm)",mTop:"Sup.",mBottom:"Inf.",mLeft:"Izq.",mRight:"Der.",compose:"Composición de imágenes",composeNote:"1 imagen → cubre todo el póster y se divide en hojas. Varias → cuadrícula.",imgCols:"Columnas img.",imgRows:"Filas img.",cells:"Celdas:",gap:"Espaciado (mm)",border:"Borde (mm)",fitCell:"Encaje por celda",fitGlobal:"Encaje global (1 imagen)",fitCover:"Cubrir (recorta)",fitContain:"Contener (completa)",fitStretch:"Estirar",borderColor:"Color de borde",bg:"Fondo",bgColor:"Color",transparent:"Transparente"},
+exp:{dpi:"Resolución (PPP)",format:"Formato",jpegQ:"Calidad JPEG",compress:"Compresión jsPDF",marks:"Marcas de corte",thickness:"Grosor (pt)",length:"Longitud (mm)",color:"Color",numbers:"Numerar páginas"},
+btn:{download:"Descargar PDF",downloadN:"Descargar PDF · {n} hoja(s) · {w} × {h} cm",preview:"Ver vista previa de hojas",hide:"Ocultar vista previa",cancel:"Cancelar generación"},
+tiles:{title:"Vista previa de cada hoja del PDF",showing:"Mostrando {shown} de {total} hojas. El PDF tendrá las {total}."},
+modal:{title:"Ponle nombre a tu creación",desc:"Se guardará como",placeholder:"mi-poster",cancel:"Cancelar",ok:"Descargar PDF",preview:"Se guardará como: {name}_poster.pdf",needName:"Escribe un nombre para continuar"},
+stat:{finalSize:"Tamaño final real",inches:"Pulgadas",pages:"Hojas totales",images:"Imágenes",cells:"Celdas de imagen",printArea:"Área imprimible",tileRes:"Resolución por hoja",quality:"Calidad de imagen",warn:"Reduce los márgenes",warnMsg:"Márgenes demasiado grandes para este papel",cellFull:"1 (cubre póster)"},
+prog:{generating:"Generando hoja {n} de {total}… ({pct}%)",done:"Listo ({s}s). Descargando…",cancelled:"Generación cancelada.",error:"Error: {msg}",cancelBtn:"Cancelado por el usuario",noMemory:"El navegador no pudo procesar la imagen (memoria insuficiente)."},
+footer:{createdBy:"Creado por",license:"Licencia MIT",source:"Código fuente"},
+alert:{noImage:"Primero sube al menos una imagen.",invalidPaper:"Configuración de papel inválida.",invalidGrid:"La cuadrícula de imágenes es demasiado pequeña.",confirmPages:"Se generarán {n} páginas. ¿Continuar?",transparencyPng:"El fondo transparente requiere PNG. Se cambió automáticamente.",tooBig:'La imagen "{name}" es demasiado grande.'}},
+en:{app:{title:"PosterCraft",subtitle:"Upload images, split the poster into sheets, and download a print-ready PDF."},
+"sec.1":"1 · Images","sec.2":"2 · Paper","sec.3":"3 · Poster layout","sec.4":"Advanced settings","sec.5":"Expert settings","sec.5.badge":"quality",
+img:{none:"No images loaded",loaded:"{n} image(s) loaded",error:"Could not load images.",max:"Maximum 500 images. First 500 will be loaded."},
+paper:{label:"Sheet size",search:"Search: A4, letter, 4x6, photo...",width:"Width (mm)",height:"Height (mm)",orientation:"Orientation",portrait:"Portrait",landscape:"Landscape",noResults:"No results",more:"… and {n} more"},
+dist:{mode:"Mode",byPages:"By number of sheets",bySize:"By final size",cols:"Columns",rows:"Rows",finalW:"Final width (cm)",finalH:"Final height (cm)"},
+adv:{overlap:"Sheet overlap (mm)",overlapNote:"Repeated margin on edges to glue without cutting content.",margins:"Individual margins (mm)",mTop:"Top",mBottom:"Bottom",mLeft:"Left",mRight:"Right",compose:"Image composition",composeNote:"1 image → covers the whole poster and splits into sheets. Several → grid.",imgCols:"Image columns",imgRows:"Image rows",cells:"Cells:",gap:"Spacing (mm)",border:"Border (mm)",fitCell:"Fit per cell",fitGlobal:"Global fit (1 image)",fitCover:"Cover (crop)",fitContain:"Contain (full)",fitStretch:"Stretch",borderColor:"Border color",bg:"Background",bgColor:"Color",transparent:"Transparent"},
+exp:{dpi:"Resolution (DPI)",format:"Format",jpegQ:"JPEG quality",compress:"jsPDF compression",marks:"Crop marks",thickness:"Thickness (pt)",length:"Length (mm)",color:"Color",numbers:"Page numbers"},
+btn:{download:"Download PDF",downloadN:"Download PDF · {n} sheet(s) · {w} × {h} cm",preview:"Preview sheets",hide:"Hide preview",cancel:"Cancel generation"},
+tiles:{title:"Preview of each PDF sheet",showing:"Showing {shown} of {total} sheets. The PDF will have all {total}."},
+modal:{title:"Name your creation",desc:"Will be saved as",placeholder:"my-poster",cancel:"Cancel",ok:"Download PDF",preview:"Will be saved as: {name}_poster.pdf",needName:"Type a name to continue"},
+stat:{finalSize:"Final real size",inches:"Inches",pages:"Total sheets",images:"Images",cells:"Image cells",printArea:"Printable area",tileRes:"Resolution per sheet",quality:"Image quality",warn:"Reduce margins",warnMsg:"Margins too large for this paper",cellFull:"1 (covers poster)"},
+prog:{generating:"Generating sheet {n} of {total}… ({pct}%)",done:"Done ({s}s). Downloading…",cancelled:"Generation cancelled.",error:"Error: {msg}",cancelBtn:"Cancelled by user",noMemory:"The browser could not process the image (out of memory)."},
+footer:{createdBy:"Created by",license:"MIT License",source:"Source code"},
+alert:{noImage:"Upload at least one image first.",invalidPaper:"Invalid paper configuration.",invalidGrid:"Image grid is too small.",confirmPages:"{n} pages will be generated. Continue?",transparencyPng:"Transparent background requires PNG. Switched automatically.",tooBig:'Image "{name}" is too large.'}},
+pt:{app:{title:"PosterCraft",subtitle:"Envie imagens, divida o pôster em folhas e baixe um PDF pronto para imprimir."},
+"sec.1":"1 · Imagens","sec.2":"2 · Papel","sec.3":"3 · Layout do pôster","sec.4":"Configurações avançadas","sec.5":"Configurações expert","sec.5.badge":"qualidade",
+img:{none:"Sem imagens carregadas",loaded:"{n} imagem(ns) carregada(s)",error:"Não foi possível carregar as imagens.",max:"Máximo de 500 imagens. As primeiras 500 serão carregadas."},
+paper:{label:"Tamanho da folha",search:"Buscar: A4, carta, 4x6, foto...",width:"Largura (mm)",height:"Altura (mm)",orientation:"Orientação",portrait:"Retrato",landscape:"Paisagem",noResults:"Sem resultados",more:"… e mais {n}"},
+dist:{mode:"Modo",byPages:"Por número de folhas",bySize:"Por tamanho final",cols:"Colunas",rows:"Linhas",finalW:"Largura final (cm)",finalH:"Altura final (cm)"},
+adv:{overlap:"Sobreposição (mm)",overlapNote:"Margem repetida nas bordas para colar sem cortar conteúdo.",margins:"Margens individuais (mm)",mTop:"Sup.",mBottom:"Inf.",mLeft:"Esq.",mRight:"Dir.",compose:"Composição de imagens",composeNote:"1 imagem → cobre todo o pôster e divide em folhas. Várias → grade.",imgCols:"Colunas img.",imgRows:"Linhas img.",cells:"Células:",gap:"Espaçamento (mm)",border:"Borda (mm)",fitCell:"Ajuste por célula",fitGlobal:"Ajuste global (1 img)",fitCover:"Cobrir (corta)",fitContain:"Conter (completa)",fitStretch:"Esticar",borderColor:"Cor da borda",bg:"Fundo",bgColor:"Cor",transparent:"Transparente"},
+exp:{dpi:"Resolução (DPI)",format:"Formato",jpegQ:"Qualidade JPEG",compress:"Compressão jsPDF",marks:"Marcas de corte",thickness:"Espessura (pt)",length:"Comprimento (mm)",color:"Cor",numbers:"Numerar páginas"},
+btn:{download:"Baixar PDF",downloadN:"Baixar PDF · {n} folha(s) · {w} × {h} cm",preview:"Pré-visualizar folhas",hide:"Ocultar pré-visualização",cancel:"Cancelar geração"},
+tiles:{title:"Pré-visualização de cada folha",showing:"Mostrando {shown} de {total} folhas. O PDF terá todas as {total}."},
+modal:{title:"Dê um nome à sua criação",desc:"Será salvo como",placeholder:"meu-poster",cancel:"Cancelar",ok:"Baixar PDF",preview:"Será salvo como: {name}_poster.pdf",needName:"Digite um nome para continuar"},
+stat:{finalSize:"Tamanho final real",inches:"Polegadas",pages:"Total de folhas",images:"Imagens",cells:"Células de imagem",printArea:"Área imprimível",tileRes:"Resolução por folha",quality:"Qualidade da imagem",warn:"Reduza as margens",warnMsg:"Margens muito grandes para este papel",cellFull:"1 (cobre pôster)"},
+prog:{generating:"Gerando folha {n} de {total}… ({pct}%)",done:"Pronto ({s}s). Baixando…",cancelled:"Geração cancelada.",error:"Erro: {msg}",cancelBtn:"Cancelado pelo usuário",noMemory:"O navegador não pôde processar a imagem (memória insuficiente)."},
+footer:{createdBy:"Criado por",license:"Licença MIT",source:"Código-fonte"},
+alert:{noImage:"Envie pelo menos uma imagem primeiro.",invalidPaper:"Configuração de papel inválida.",invalidGrid:"A grade de imagens é muito pequena.",confirmPages:"Serão geradas {n} páginas. Continuar?",transparencyPng:"Fundo transparente requer PNG. Alterado automaticamente.",tooBig:'A imagem "{name}" é muito grande.'}},
+fr:{app:{title:"PosterCraft",subtitle:"Importez des images, divisez l'affiche en feuilles et téléchargez un PDF prêt à imprimer."},
+"sec.1":"1 · Images","sec.2":"2 · Papier","sec.3":"3 · Mise en page","sec.4":"Paramètres avancés","sec.5":"Paramètres expert","sec.5.badge":"qualité",
+img:{none:"Aucune image chargée",loaded:"{n} image(s) chargée(s)",error:"Impossible de charger les images.",max:"Maximum 500 images. Les 500 premières seront chargées."},
+paper:{label:"Taille de feuille",search:"Rechercher : A4, lettre, 4x6, photo...",width:"Largeur (mm)",height:"Hauteur (mm)",orientation:"Orientation",portrait:"Portrait",landscape:"Paysage",noResults:"Aucun résultat",more:"… et {n} de plus"},
+dist:{mode:"Mode",byPages:"Par nombre de feuilles",bySize:"Par taille finale",cols:"Colonnes",rows:"Lignes",finalW:"Largeur finale (cm)",finalH:"Hauteur finale (cm)"},
+adv:{overlap:"Chevauchement (mm)",overlapNote:"Marge répétée sur les bords pour coller sans couper le contenu.",margins:"Marges individuelles (mm)",mTop:"Haut",mBottom:"Bas",mLeft:"Gauche",mRight:"Droite",compose:"Composition d'images",composeNote:"1 image → couvre toute l'affiche et se divise. Plusieurs → grille.",imgCols:"Colonnes img.",imgRows:"Lignes img.",cells:"Cellules :",gap:"Espacement (mm)",border:"Bordure (mm)",fitCell:"Ajustement par cellule",fitGlobal:"Ajustement global",fitCover:"Couvrir (rogner)",fitContain:"Contenir (complète)",fitStretch:"Étirer",borderColor:"Couleur de bordure",bg:"Fond",bgColor:"Couleur",transparent:"Transparent"},
+exp:{dpi:"Résolution (PPP)",format:"Format",jpegQ:"Qualité JPEG",compress:"Compression jsPDF",marks:"Traits de coupe",thickness:"Épaisseur (pt)",length:"Longueur (mm)",color:"Couleur",numbers:"Numéroter les pages"},
+btn:{download:"Télécharger PDF",downloadN:"Télécharger PDF · {n} feuille(s) · {w} × {h} cm",preview:"Aperçu des feuilles",hide:"Masquer l'aperçu",cancel:"Annuler la génération"},
+tiles:{title:"Aperçu de chaque feuille",showing:"Affichage de {shown} sur {total} feuilles. Le PDF aura toutes les {total}."},
+modal:{title:"Nommez votre création",desc:"Sera enregistré sous",placeholder:"mon-affiche",cancel:"Annuler",ok:"Télécharger PDF",preview:"Sera enregistré sous : {name}_poster.pdf",needName:"Saisissez un nom pour continuer"},
+stat:{finalSize:"Taille finale réelle",inches:"Pouces",pages:"Feuilles totales",images:"Images",cells:"Cellules d'image",printArea:"Zone imprimable",tileRes:"Résolution par feuille",quality:"Qualité d'image",warn:"Réduisez les marges",warnMsg:"Marges trop grandes pour ce papier",cellFull:"1 (couvre l'affiche)"},
+prog:{generating:"Génération feuille {n} sur {total}… ({pct}%)",done:"Terminé ({s}s). Téléchargement…",cancelled:"Génération annulée.",error:"Erreur : {msg}",cancelBtn:"Annulé par l'utilisateur",noMemory:"Le navigateur n'a pas pu traiter l'image (mémoire insuffisante)."},
+footer:{createdBy:"Créé par",license:"Licence MIT",source:"Code source"},
+alert:{noImage:"Importez d'abord au moins une image.",invalidPaper:"Configuration de papier invalide.",invalidGrid:"La grille d'images est trop petite.",confirmPages:"{n} pages seront générées. Continuer ?",transparencyPng:"Le fond transparent nécessite PNG. Modifié automatiquement.",tooBig:'L\'image "{name}" est trop grande.'}},
+de:{app:{title:"PosterCraft",subtitle:"Bilder hochladen, Poster in Blätter aufteilen und druckfertige PDF herunterladen."},
+"sec.1":"1 · Bilder","sec.2":"2 · Papier","sec.3":"3 · Poster-Layout","sec.4":"Erweiterte Einstellungen","sec.5":"Experten-Einstellungen","sec.5.badge":"Qualität",
+img:{none:"Keine Bilder geladen",loaded:"{n} Bild(er) geladen",error:"Bilder konnten nicht geladen werden.",max:"Maximal 500 Bilder. Die ersten 500 werden geladen."},
+paper:{label:"Blattgröße",search:"Suchen: A4, Letter, 4x6, Foto...",width:"Breite (mm)",height:"Höhe (mm)",orientation:"Ausrichtung",portrait:"Hochformat",landscape:"Querformat",noResults:"Keine Ergebnisse",more:"… und {n} weitere"},
+dist:{mode:"Modus",byPages:"Nach Blattanzahl",bySize:"Nach Endgröße",cols:"Spalten",rows:"Zeilen",finalW:"Endbreite (cm)",finalH:"Endhöhe (cm)"},
+adv:{overlap:"Überlappung (mm)",overlapNote:"Wiederholter Rand zum Kleben ohne Inhaltsverlust.",margins:"Individuelle Ränder (mm)",mTop:"Oben",mBottom:"Unten",mLeft:"Links",mRight:"Rechts",compose:"Bildkomposition",composeNote:"1 Bild → deckt das gesamte Poster ab. Mehrere → Raster.",imgCols:"Bildspalten",imgRows:"Bildzeilen",cells:"Zellen:",gap:"Abstand (mm)",border:"Rahmen (mm)",fitCell:"Anpassung pro Zelle",fitGlobal:"Globale Anpassung",fitCover:"Füllen (zuschneiden)",fitContain:"Einpassen (komplett)",fitStretch:"Strecken",borderColor:"Rahmenfarbe",bg:"Hintergrund",bgColor:"Farbe",transparent:"Transparent"},
+exp:{dpi:"Auflösung (DPI)",format:"Format",jpegQ:"JPEG-Qualität",compress:"jsPDF-Kompression",marks:"Schnittmarken",thickness:"Dicke (pt)",length:"Länge (mm)",color:"Farbe",numbers:"Seitenzahlen"},
+btn:{download:"PDF herunterladen",downloadN:"PDF herunterladen · {n} Blatt · {w} × {h} cm",preview:"Blätter-Vorschau",hide:"Vorschau ausblenden",cancel:"Generierung abbrechen"},
+tiles:{title:"Vorschau jedes Blattes",showing:"Zeige {shown} von {total} Blättern. Die PDF hat alle {total}."},
+modal:{title:"Benennen Sie Ihre Kreation",desc:"Wird gespeichert als",placeholder:"mein-poster",cancel:"Abbrechen",ok:"PDF herunterladen",preview:"Wird gespeichert als: {name}_poster.pdf",needName:"Geben Sie einen Namen ein"},
+stat:{finalSize:"Reale Endgröße",inches:"Zoll",pages:"Blätter gesamt",images:"Bilder",cells:"Bildzellen",printArea:"Druckbereich",tileRes:"Auflösung pro Blatt",quality:"Bildqualität",warn:"Ränder reduzieren",warnMsg:"Ränder zu groß für dieses Papier",cellFull:"1 (deckt Poster ab)"},
+prog:{generating:"Erzeuge Blatt {n} von {total}… ({pct}%)",done:"Fertig ({s}s). Download…",cancelled:"Generierung abgebrochen.",error:"Fehler: {msg}",cancelBtn:"Vom Benutzer abgebrochen",noMemory:"Der Browser konnte das Bild nicht verarbeiten (Speicher voll)."},
+footer:{createdBy:"Erstellt von",license:"MIT-Lizenz",source:"Quellcode"},
+alert:{noImage:"Laden Sie zuerst mindestens ein Bild hoch.",invalidPaper:"Ungültige Papierkonfiguration.",invalidGrid:"Das Bildraster ist zu klein.",confirmPages:"{n} Seiten werden erstellt. Fortfahren?",transparencyPng:"Transparenter Hintergrund erfordert PNG. Automatisch geändert.",tooBig:'Das Bild "{name}" ist zu groß.'}}
+};
+
+let LANG = "en";
+function detectLang(){const l=(navigator.language||navigator.userLanguage||"en").toLowerCase().slice(0,2);return I18N[l]?l:"en";}
+function t(path, vars){
+  const parts = path.split(".");
+  let v = I18N[LANG];
+  for (const p of parts) { if (v == null) break; v = v[p]; }
+  if (v == null) { let e = I18N.en; for (const p of parts) { if (e == null) break; e = e[p]; } v = e != null ? e : path; }
+  if (typeof v === "string" && vars) for (const k in vars) v = v.replace(new RegExp("\\{"+k+"\\}","g"), vars[k]);
+  return v;
+}
+function applyLang(lang){
+  LANG = I18N[lang] ? lang : "en";
+  document.documentElement.lang = LANG;
+  document.querySelectorAll("[data-i18n]").forEach(el => { const k = el.getAttribute("data-i18n"); if (k) el.textContent = t(k); });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach(el => { const k = el.getAttribute("data-i18n-placeholder"); if (k) el.placeholder = t(k); });
+  document.title = "PosterCraft • Free Poster Maker";
+  els.langSelect.value = LANG;
+  if (typeof scheduleRender === "function") scheduleRender();
+}
+
+/* ═══ PAPELES: [icono_tipo, tipo, referencia, [mm]] ═══ */
+const PAPELES = {
+"A0 · 841 × 1189 mm":["paper","ISO A","Estándar mundial · gran formato",[841,1189]],
+"A1 · 594 × 841 mm":["paper","ISO A","Estándar mundial · gran formato",[594,841]],
+"A2 · 420 × 594 mm":["paper","ISO A","Estándar mundial · póster mediano",[420,594]],
+"A3 · 297 × 420 mm":["paper","ISO A","Estándar mundial · póster pequeño",[297,420]],
+"A4 · 210 × 297 mm":["paper","ISO A","Estándar mundial · oficina",[210,297]],
+"A5 · 148 × 210 mm":["paper","ISO A","Estándar mundial · cuaderno",[148,210]],
+"A6 · 105 × 148 mm":["paper","ISO A","Estándar mundial · postal",[105,148]],
+"B0 · 1000 × 1414 mm":["paper","ISO B","Carteles grandes",[1000,1414]],
+"B1 · 707 × 1000 mm":["paper","ISO B","Carteles",[707,1000]],
+"B2 · 500 × 707 mm":["paper","ISO B","Carteles medianos",[500,707]],
+"B3 · 353 × 500 mm":["paper","ISO B","Periódicos",[353,500]],
+"B4 · 250 × 353 mm":["paper","ISO B","Revistas",[250,353]],
+"B5 · 176 × 250 mm":["paper","ISO B","Libros",[176,250]],
+"C4 · 229 × 324 mm":["envelope","ISO C","Sobre para A4",[229,324]],
+"C5 · 162 × 229 mm":["envelope","ISO C","Sobre para A5",[162,229]],
+"C6 · 114 × 162 mm":["envelope","ISO C","Sobre para A6",[114,162]],
+"Carta / Letter · 8.5 × 11 in":["news","US","Estándar EE.UU.",[215.9,279.4]],
+"Legal · 8.5 × 14 in":["news","US","Documentos largos EE.UU.",[215.9,355.6]],
+"Tabloide · 11 × 17 in":["news","US","Doble carta",[279.4,431.8]],
+"Oficio / Folio · 8.5 × 13 in":["news","LATAM","Latinoamérica",[215.9,330.2]],
+"Ejecutivo · 7.25 × 10.5 in":["news","US","Compacto ejecutivo",[184.15,266.7]],
+"Media carta · 5.5 × 8.5 in":["news","US","Media carta",[139.7,215.9]],
+"Gobierno / Legal · 8 × 13 in":["news","LATAM","Gobierno",[203.2,330.2]],
+"ANSI A · 8.5 × 11 in":["ruler","ANSI","Ingeniería EE.UU. A",[215.9,279.4]],
+"ANSI B · 11 × 17 in":["ruler","ANSI","Ingeniería EE.UU. B",[279.4,431.8]],
+"ANSI C · 17 × 22 in":["ruler","ANSI","Ingeniería EE.UU. C",[431.8,558.8]],
+"ANSI D · 22 × 34 in":["ruler","ANSI","Ingeniería EE.UU. D",[558.8,863.6]],
+"ANSI E · 34 × 44 in":["ruler","ANSI","Ingeniería EE.UU. E",[863.6,1117.6]],
+"ARCH A · 9 × 12 in":["ruler","ARCH","Planos arquitecto A",[228.6,304.8]],
+"ARCH B · 12 × 18 in":["ruler","ARCH","Planos arquitecto B",[304.8,457.2]],
+"ARCH C · 18 × 24 in":["ruler","ARCH","Planos arquitecto C",[457.2,609.6]],
+"ARCH D · 24 × 36 in":["ruler","ARCH","Planos arquitecto D",[609.6,914.4]],
+"ARCH E · 36 × 48 in":["ruler","ARCH","Planos arquitecto E",[914.4,1219.2]],
+"CAN P1 · 560 × 860 mm":["leaf","CAN","Canadiense P1",[560,860]],
+"CAN P2 · 430 × 560 mm":["leaf","CAN","Canadiense P2",[430,560]],
+"CAN P3 · 280 × 430 mm":["leaf","CAN","Canadiense P3",[280,430]],
+"CAN P4 · 215 × 280 mm":["leaf","CAN","Canadiense P4",[215,280]],
+"JIS B0 · 1030 × 1456 mm":["globe","JIS","Japón B0",[1030,1456]],
+"JIS B1 · 728 × 1030 mm":["globe","JIS","Japón B1",[728,1030]],
+"JIS B2 · 515 × 728 mm":["globe","JIS","Japón B2",[515,728]],
+"JIS B3 · 364 × 515 mm":["globe","JIS","Japón B3",[364,515]],
+"JIS B4 · 257 × 364 mm":["globe","JIS","Japón B4",[257,364]],
+"JIS B5 · 182 × 257 mm":["globe","JIS","Japón B5",[182,257]],
+"GB D0 · 764 × 1064 mm":["flag","GB/T","China D0",[764,1064]],
+"GB D1 · 532 × 760 mm":["flag","GB/T","China D1",[532,760]],
+"GB D2 · 380 × 528 mm":["flag","GB/T","China D2",[380,528]],
+"GB D3 · 264 × 376 mm":["flag","GB/T","China D3",[264,376]],
+"Cloche · 300 × 400 mm":["flag","FR","Francés clásico",[300,400]],
+"Cavalier · 450 × 620 mm":["flag","FR","Francés caballero",[450,620]],
+"Colombier · 600 × 800 mm":["flag","FR","Francés paloma",[600,800]],
+"Grand Aigle · 750 × 1060 mm":["flag","FR","Francés gran águila",[750,1060]],
+"Jésus · 560 × 760 mm":["flag","FR","Francés Jesús",[560,760]],
+"DIN 4A · 1682 × 2378 mm":["factory","DIN","DIN 4A",[1682,2378]],
+"DIN 2A · 1189 × 1682 mm":["factory","DIN","DIN 2A",[1189,1682]],
+"Kiku · 227 × 306 mm":["tree","JP-TRAD","Japonés Kiku",[227,306]],
+"Shirokuban · 264 × 379 mm":["tree","JP-TRAD","Japonés Shirokuban",[264,379]],
+"Kikuban · 273 × 394 mm":["tree","JP-TRAD","Japonés Kikuban",[273,394]],
+"Sobre #10 · 4.125 × 9.5 in":["envelope","Sobre","Sobre carta EE.UU.",[104.8,241.3]],
+"Sobre DL · 110 × 220 mm":["envelope","Sobre","Sobre europeo alargado",[110,220]],
+"Foto 2 × 3 in · 5,1 × 7,6 cm":["camera","Foto in","Foto carnet EE.UU.",[50.8,76.2]],
+"Foto 3 × 5 in · 7,6 × 12,7 cm":["camera","Foto in","Foto clásica 3×5",[76.2,127]],
+"⭐ Foto 4 × 6 in · 10,2 × 15,2 cm":["camera","Foto in","Foto estándar 4×6 pulgadas",[101.6,152.4]],
+"Foto 5 × 7 in · 12,7 × 17,8 cm":["camera","Foto in","Foto ampliada 5×7",[127,177.8]],
+"Foto 6 × 8 in · 15,2 × 20,3 cm":["camera","Foto in","Foto 6×8 pulgadas",[152.4,203.2]],
+"Foto 8 × 10 in · 20,3 × 25,4 cm":["camera","Foto in","Foto grande 8×10",[203.2,254]],
+"Foto 11 × 14 in · 27,9 × 35,6 cm":["camera","Foto in","Foto grande 11×14",[279.4,355.6]],
+"Foto 12 × 16 in · 30,5 × 40,6 cm":["camera","Foto in","Foto grande 12×16",[304.8,406.4]],
+"Foto 16 × 20 in · 40,6 × 50,8 cm":["camera","Foto in","Foto extra grande 16×20",[406.4,508]],
+"Foto 20 × 30 in · 50,8 × 76,2 cm":["camera","Foto in","Póster 20×30 pulgadas",[508,762]],
+"Foto 9 × 13 cm":["photo","Foto cm","Foto pequeña 9×13",[90,130]],
+"Foto 10 × 15 cm":["photo","Foto cm","Foto estándar 10×15",[100,150]],
+"Foto 13 × 18 cm":["photo","Foto cm","Foto mediana 13×18",[130,180]],
+"Foto 15 × 20 cm":["photo","Foto cm","Foto ampliada 15×20",[150,200]],
+"Foto 20 × 25 cm":["photo","Foto cm","Foto grande 20×25",[200,250]],
+"Foto 20 × 30 cm":["photo","Foto cm","Foto grande 20×30",[200,300]],
+"Foto 30 × 40 cm":["photo","Foto cm","Póster 30×40",[300,400]],
+"Foto 30 × 45 cm":["photo","Foto cm","Póster 30×45",[300,450]],
+"Foto 40 × 50 cm":["photo","Foto cm","Póster 40×50",[400,500]],
+"Foto 50 × 70 cm":["photo","Foto cm","Póster 50×70",[500,700]],
+"Cuadrado 10 × 10 cm":["square","Cuadro","Instagram 10×10",[100,100]],
+"Cuadrado 15 × 15 cm":["square","Cuadro","Cuadrado 15×15",[150,150]],
+"Cuadrado 20 × 20 cm":["square","Cuadro","Cuadrado 20×20",[200,200]],
+"Cuadrado 30 × 30 cm":["square","Cuadro","Cuadrado 30×30",[300,300]],
+"Cuadrado 50 × 50 cm":["square","Cuadro","Cuadrado 50×50",[500,500]],
+"Afiche 30 × 40 cm":["palette","Afiche","Afiche pequeño",[300,400]],
+"Afiche 40 × 60 cm":["palette","Afiche","Afiche mediano",[400,600]],
+"Afiche 50 × 70 cm":["palette","Afiche","Afiche grande",[500,700]],
+"Afiche 60 × 90 cm":["palette","Afiche","Afiche extragrande",[600,900]],
+"Afiche 70 × 100 cm":["palette","Afiche","Pliego 70×100",[700,1000]],
+"Doble pliego 100 × 140 cm":["megaphone","Gran formato","Doble pliego",[1000,1400]],
+"Valla 100 × 200 cm":["megaphone","Gran formato","Valla publicitaria",[1000,2000]],
+"Personalizado…":["settings","Otro","Definir medidas a mano",null]
+};
+
+/* ═══ DOM ═══ */
+const $=id=>document.getElementById(id);
+const els={file:$('file'),imgInfo:$('imgInfo'),imgList:$('imgList'),langSelect:$('langSelect'),
+paperSearch:$('paperSearch'),papel:$('papel'),paperList:$('paperList'),paperSelected:$('paperSelected'),
+customWrap:$('customWrap'),customW:$('customW'),customH:$('customH'),orient:$('orient'),
+solape:$('solape'),solapeVal:$('solapeVal'),mTop:$('mTop'),mBottom:$('mBottom'),mLeft:$('mLeft'),mRight:$('mRight'),
+modo:$('modo'),cols:$('cols'),rows:$('rows'),paginasWrap:$('paginasWrap'),finalWrap:$('finalWrap'),finalW:$('finalW'),finalH:$('finalH'),
+imgCols:$('imgCols'),imgRows:$('imgRows'),totalCeldas:$('totalCeldas'),gap:$('gap'),borde:$('borde'),bordeColor:$('bordeColor'),ajusteImg:$('ajusteImg'),
+ajuste:$('ajuste'),fondo:$('fondo'),transparente:$('transparente'),
+dpi:$('dpi'),formato:$('formato'),jpegQ:$('jpegQ'),jpegQVal:$('jpegQVal'),compresion:$('compresion'),
+marcas:$('marcas'),marcasGrosor:$('marcasGrosor'),marcasLong:$('marcasLong'),marcasColor:$('marcasColor'),
+numeros:$('numeros'),info:$('info'),preview:$('preview'),tilePreview:$('tilePreview'),tileGrid:$('tileGrid'),
+btn:$('btnPdf'),btnTiles:$('btnTiles'),btnCancel:$('btnCancel'),prog:$('prog'),barWrap:$('barWrap'),bar:$('bar'),
+modalOverlay:$('modalOverlay'),nombreInput:$('nombreInput'),previewName:$('previewName'),modalOk:$('modalOk'),modalCancel:$('modalCancel')};
+
+/* ═══ BUSCADOR DE PAPELES ═══ */
+function renderPaperList(filtro){
+  filtro=(filtro||"").toLowerCase().trim();
+  const items=[];
+  for(const key in PAPELES){
+    const data=PAPELES[key]; if(!data)continue;
+    const [iconName,tipo,ref,mm]=data;
+    const texto=(key+" "+tipo+" "+ref).toLowerCase();
+    if(filtro && texto.indexOf(filtro)===-1) continue;
+    items.push({key,iconName,tipo,ref,mm});
+  }
+  const limit=60, visibles=items.slice(0,limit);
+  if(visibles.length===0){els.paperList.innerHTML='<div style="padding:14px;text-align:center;color:var(--dim);font-size:11.5px">'+t("paper.noResults")+'</div>';return;}
+  let html="";
+  for(const p of visibles){
+    const partes=p.key.split(" · "), medida=partes[1]||p.key;
+    const activo=p.key===els.papel.value?" active":"";
+    const iconSvg=ICONS[p.iconName]||ICONS.paper;
+    html+='<div class="paper-item'+activo+'" data-key="'+p.key+'"><span class="em">'+iconSvg+'</span><span class="main"><span class="medida">'+partes[0]+' · '+medida+'</span><span class="ref">'+p.ref+'</span></span><span class="tipo">'+p.tipo+'</span></div>';
+  }
+  if(items.length>limit) html+='<div style="padding:8px;text-align:center;color:var(--dim);font-size:10.5px">'+t("paper.more",{n:items.length-limit})+'</div>';
+  els.paperList.innerHTML=html;
+  els.paperList.querySelectorAll(".paper-item").forEach(el=>{
+    el.addEventListener("mousedown",function(e){e.preventDefault();seleccionarPapel(this.getAttribute("data-key"));els.paperList.classList.remove("open");els.paperSearch.value="";});
+  });
+}
+function seleccionarPapel(key){
+  const data=PAPELES[key]; if(!data)return;
+  const [iconName,,ref]=data; els.papel.value=key;
+  const partes=key.split(" · "), medida=partes[1]||key;
+  const iconSvg=ICONS[iconName]||ICONS.paper;
+  els.paperSelected.innerHTML='<span class="em">'+iconSvg+'</span><span><b>'+partes[0]+' · '+medida+'</b><br><span style="color:var(--dim);font-size:10.5px">'+ref+'</span></span>';
+  els.customWrap.classList.toggle("hidden",key!=="Personalizado…");
+  scheduleRender();
+}
+els.paperSearch.addEventListener("focus",function(){renderPaperList(this.value);els.paperList.classList.add("open");});
+els.paperSearch.addEventListener("input",function(){renderPaperList(this.value);els.paperList.classList.add("open");});
+els.paperSearch.addEventListener("blur",function(){setTimeout(function(){els.paperList.classList.remove("open");},180);});
+
+/* ═══ ESTADO ═══ */
+let imagenes=[],imgName="poster",cancelado=false,rafId=null;
+
+/* ═══ LAYOUT ═══ */
+function getLayout(){
+  const data=PAPELES[els.papel.value]; let pw,ph;
+  if(data&&data[3]){pw=data[3][0];ph=data[3][1];}
+  else{pw=Math.max(20,+els.customW.value||210);ph=Math.max(20,+els.customH.value||297);}
+  if(els.orient.value==="l"){const tmp=pw;pw=ph;ph=tmp;}
+  const mT=Math.max(0,+els.mTop.value||0),mB=Math.max(0,+els.mBottom.value||0),mL=Math.max(0,+els.mLeft.value||0),mR=Math.max(0,+els.mRight.value||0);
+  const printableW=pw-mL-mR, printableH=ph-mT-mB;
+  if(printableW<10||printableH<10) return null;
+  let ov=Math.max(0,+els.solape.value||0);
+  ov=Math.min(ov,printableW*0.45,printableH*0.45);
+  let cols,rows;
+  if(els.modo.value==="paginas"){cols=Math.max(1,Math.min(40,Math.round(+els.cols.value||1)));rows=Math.max(1,Math.min(40,Math.round(+els.rows.value||1)));}
+  else{const tw=Math.max(10,(+els.finalW.value||50)*10),th=Math.max(10,(+els.finalH.value||70)*10);
+       cols=Math.max(1,Math.ceil((tw-ov)/(printableW-ov)));rows=Math.max(1,Math.ceil((th-ov)/(printableH-ov)));}
+  const posterW=cols*printableW-(cols-1)*ov, posterH=rows*printableH-(rows-1)*ov;
+  return {pw,ph,mT,mB,mL,mR,solape:ov,printableW,printableH,cols,rows,posterW,posterH};
+}
+function getGridLayout(L){
+  if(imagenes.length===1) return {imgCols:1,imgRows:1,gap:0,borde:0,bordeColor:"#fff",cellW:L.posterW,cellH:L.posterH};
+  const imgCols=Math.max(1,Math.min(50,+els.imgCols.value||1)), imgRows=Math.max(1,Math.min(50,+els.imgRows.value||1));
+  const gap=Math.max(0,+els.gap.value||0), borde=Math.max(0,+els.borde.value||0);
+  const cellW=(L.posterW-gap*(imgCols+1))/imgCols, cellH=(L.posterH-gap*(imgRows+1))/imgRows;
+  if(cellW<5||cellH<5) return null;
+  return {imgCols,imgRows,gap,borde,bordeColor:els.bordeColor.value,cellW,cellH};
+}
+function getTileRect(L,r,c,scale,pxW,pxH,masterW,masterH){
+  const tx=c*(L.printableW-L.solape), ty=r*(L.printableH-L.solape);
+  let sx=Math.round(tx*scale), sy=Math.round(ty*scale), sw=pxW, sh=pxH;
+  if(sx<0)sx=0; if(sy<0)sy=0;
+  if(sx+sw>masterW) sw=Math.max(1,masterW-sx);
+  if(sy+sh>masterH) sh=Math.max(1,masterH-sy);
+  return {sx,sy,sw,sh,dx:0,dy:0,dw:sw,dh:sh,tx,ty};
+}
+
+/* ═══ DIBUJO ═══ */
+function drawHighQuality(ctx,source,sx,sy,sw,sh,dx,dy,dw,dh){
+  ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality="high";
+  if(sw<=0||sh<=0||dw<=0||dh<=0) return;
+  const ratio=Math.min(dw/sw,dh/sh);
+  if(ratio>=0.5||ratio<=0){ctx.drawImage(source,sx,sy,sw,sh,dx,dy,dw,dh);return;}
+  let curSrc=source,cx=sx,cy=sy,cw=sw,ch=sh;
+  while(cw/2>dw&&ch/2>dh){
+    const nw=Math.max(1,Math.round(cw/2)),nh=Math.max(1,Math.round(ch/2));
+    const tmp=document.createElement("canvas");tmp.width=nw;tmp.height=nh;
+    const tctx=tmp.getContext("2d");tctx.imageSmoothingEnabled=true;tctx.imageSmoothingQuality="high";
+    tctx.drawImage(curSrc,cx,cy,cw,ch,0,0,nw,nh);
+    curSrc=tmp;cx=0;cy=0;cw=nw;ch=nh;
+  }
+  ctx.drawImage(curSrc,cx,cy,cw,ch,dx,dy,dw,dh);
+}
+function drawImageFit(ctx,img,dx,dy,dw,dh,mode){
+  const iw=img.naturalWidth,ih=img.naturalHeight;
+  let dispW,dispH,ox,oy;
+  if(mode==="stretch"){dispW=dw;dispH=dh;ox=dx;oy=dy;}
+  else{const s=mode==="cover"?Math.max(dw/iw,dh/ih):Math.min(dw/iw,dh/ih);
+       dispW=iw*s;dispH=ih*s;ox=dx+(dw-dispW)/2;oy=dy+(dh-dispH)/2;}
+  ctx.save();ctx.beginPath();ctx.rect(dx,dy,dw,dh);ctx.clip();
+  drawHighQuality(ctx,img,0,0,iw,ih,ox,oy,dispW,dispH);ctx.restore();
+}
+function drawGrid(ctx,L,grid,scale){
+  const {imgCols,imgRows,gap,borde,bordeColor,cellW,cellH}=grid;
+  const n=imagenes.length; if(n===0) return;
+  for(let r=0;r<imgRows;r++)for(let c=0;c<imgCols;c++){
+    const idx=(r*imgCols+c)%n, img=imagenes[idx]; if(!img) continue;
+    const cx=(c*(cellW+gap)+gap)*scale, cy=(r*(cellH+gap)+gap)*scale, cw=cellW*scale, ch=cellH*scale;
+    if(borde>0){ctx.fillStyle=bordeColor;ctx.fillRect(cx-borde*scale,cy-borde*scale,cw+borde*2*scale,ch+borde*2*scale);}
+    if(!els.transparente.checked){ctx.fillStyle=els.fondo.value;ctx.fillRect(cx,cy,cw,ch);}
+    const modo=n===1?els.ajuste.value:els.ajusteImg.value;
+    drawImageFit(ctx,img,cx,cy,cw,ch,modo);
+  }
+}
+
+/* ═══ RENDER ═══ */
+function scheduleRender(){if(rafId) return;rafId=requestAnimationFrame(function(){rafId=null;render();});}
+function render(){
+  els.customWrap.classList.toggle("hidden",els.papel.value!=="Personalizado…");
+  els.paginasWrap.classList.toggle("hidden",els.modo.value!=="paginas");
+  els.finalWrap.classList.toggle("hidden",els.modo.value!=="final");
+  els.solapeVal.textContent=els.solape.value;
+  els.jpegQVal.textContent=els.jpegQ.value+"%";
+  const esUnaImagen=imagenes.length===1;
+  const ic=Math.max(1,+els.imgCols.value||1), ir=Math.max(1,+els.imgRows.value||1);
+  if(esUnaImagen){els.totalCeldas.textContent=t("stat.cellFull");}
+  else{els.totalCeldas.textContent=ic*ir;}
+  ["imgCols","imgRows","gap","borde","ajusteImg"].forEach(k=>{els[k].disabled=esUnaImagen;els[k].style.opacity=esUnaImagen?"0.5":"1";});
+
+  const L=getLayout(), cv=els.preview, ctx=cv.getContext("2d");
+  const fondo=els.transparente.checked?null:els.fondo.value;
+  if(!L){
+    cv.width=480;cv.height=90;ctx.fillStyle="#1e2430";ctx.fillRect(0,0,480,90);
+    ctx.fillStyle="#ff5c5c";ctx.font="13px system-ui";ctx.textAlign="center";
+    ctx.fillText(t("stat.warnMsg"),240,50);
+    els.info.innerHTML='<div class="stat"><span>'+t("stat.warn")+'</span><b class="bad">'+t("stat.warn")+'</b></div>';
+    els.btn.disabled=true;els.btnTiles.disabled=true;return;
+  }
+  const wrapW=Math.max(260,(cv.parentElement.clientWidth||700)-24);
+  const s=Math.min(wrapW/L.posterW,460/L.posterH);
+  cv.width=Math.max(1,Math.round(L.posterW*s));cv.height=Math.max(1,Math.round(L.posterH*s));
+  cv.style.width=cv.width+"px";cv.style.height=cv.height+"px";
+  if(fondo){ctx.fillStyle=fondo;ctx.fillRect(0,0,cv.width,cv.height);}else{ctx.clearRect(0,0,cv.width,cv.height);}
+  let grid=null;
+  if(imagenes.length>0){grid=getGridLayout(L);if(grid)drawGrid(ctx,L,grid,s);}
+  else{ctx.fillStyle="#20262f";ctx.fillRect(0,0,cv.width,cv.height);}
+  const total=L.cols*L.rows, stepX=(L.printableW-L.solape)*s, stepY=(L.printableH-L.solape)*s;
+  if(imagenes.length>0){ctx.fillStyle="rgba(79,140,255,.18)";
+    for(let c=1;c<L.cols;c++)ctx.fillRect(c*stepX,0,L.solape*s,cv.height);
+    for(let r=1;r<L.rows;r++)ctx.fillRect(0,r*stepY,cv.width,L.solape*s);}
+  ctx.strokeStyle="rgba(255,60,60,.9)";ctx.lineWidth=1.4;ctx.beginPath();
+  for(let c=1;c<L.cols;c++){const x=Math.round(c*stepX)+.5;ctx.moveTo(x,0);ctx.lineTo(x,cv.height);}
+  for(let r=1;r<L.rows;r++){const y=Math.round(r*stepY)+.5;ctx.moveTo(0,y);ctx.lineTo(cv.width,y);}
+  ctx.stroke();ctx.strokeStyle="rgba(0,0,0,.55)";ctx.lineWidth=2;ctx.strokeRect(1,1,cv.width-2,cv.height-2);
+  ctx.font="bold 11px system-ui";ctx.textAlign="center";ctx.textBaseline="middle";
+  let n=1;
+  for(let r=0;r<L.rows;r++)for(let c=0;c<L.cols;c++){
+    const cx=(c*stepX)+(L.printableW*s)/2, cy=(r*stepY)+(L.printableH*s)/2, txt=n+"/"+total;
+    ctx.fillStyle="rgba(0,0,0,.55)";const w=ctx.measureText(txt).width+10;
+    ctx.fillRect(cx-w/2,cy-9,w,18);ctx.fillStyle="#fff";ctx.fillText(txt,cx,cy);n++;
+  }
+  const cmW=(L.posterW/10).toFixed(1), cmH=(L.posterH/10).toFixed(1);
+  const inW=(L.posterW/25.4).toFixed(1), inH=(L.posterH/25.4).toFixed(1);
+  let dpiUse=+els.dpi.value;const maxSide=12000,maxArea=100e6;
+  dpiUse=Math.min(dpiUse,maxSide/(L.printableW/25.4),maxSide/(L.printableH/25.4));
+  let pxW=Math.round(L.printableW/25.4*dpiUse),pxH=Math.round(L.printableH/25.4*dpiUse);
+  if(pxW*pxH>maxArea){const k=Math.sqrt(maxArea/(pxW*pxH));pxW=Math.round(pxW*k);pxH=Math.round(pxH*k);}
+  let ppiTxt="—",ppiCls="";
+  if(imagenes.length>0&&grid){const img0=imagenes[0];
+    const ppiW=img0.naturalWidth/(grid.cellW/25.4), ppiH=img0.naturalHeight/(grid.cellH/25.4);
+    const ppi=Math.min(ppiW,ppiH);ppiTxt=Math.round(ppi)+" DPI";ppiCls=ppi<90?"bad":ppi<130?"warn":"ok";}
+  els.info.innerHTML=
+    '<div class="stat"><span>'+t("stat.finalSize")+'</span><b>'+cmW+' × '+cmH+' cm</b></div>'+
+    '<div class="stat"><span>'+t("stat.inches")+'</span><b class="small">'+inW+'″ × '+inH+'″</b></div>'+
+    '<div class="stat"><span>'+t("stat.pages")+'</span><b>'+L.cols+' × '+L.rows+' = '+total+'</b></div>'+
+    '<div class="stat"><span>'+t("stat.images")+'</span><b>'+imagenes.length+'</b></div>'+
+    '<div class="stat"><span>'+t("stat.cells")+'</span><b>'+(esUnaImagen?t("stat.cellFull"):ic+" × "+ir+" = "+(ic*ir))+'</b></div>'+
+    '<div class="stat"><span>'+t("stat.printArea")+'</span><b class="small">'+L.printableW.toFixed(0)+' × '+L.printableH.toFixed(0)+' mm</b></div>'+
+    '<div class="stat"><span>'+t("stat.tileRes")+'</span><b class="small">'+pxW+' × '+pxH+' px</b></div>'+
+    '<div class="stat"><span>'+t("stat.quality")+'</span><b class="'+ppiCls+'">'+ppiTxt+'</b></div>';
+  if(imagenes.length>0){
+    els.btn.disabled=false;els.btnTiles.disabled=false;
+    els.btn.querySelector("[data-i18n]").textContent=t("btn.downloadN",{n:total,w:cmW,h:cmH});
+  }else{
+    els.btn.disabled=true;els.btnTiles.disabled=true;
+    els.btn.querySelector("[data-i18n]").textContent=t("btn.download");
+  }
+  if(!els.tilePreview.classList.contains("hidden")&&imagenes.length>0) generarMiniaturas();
+}
+
+/* ═══ MINIATURAS ═══ */
+function generarMiniaturas(){
+  const L=getLayout();if(!L)return;const grid=getGridLayout(L);if(!grid)return;
+  const total=L.cols*L.rows, limit=Math.min(total,24);
+  const thumbDpi=40;
+  const pxW=Math.max(40,Math.round(L.printableW/25.4*thumbDpi)), pxH=Math.max(40,Math.round(L.printableH/25.4*thumbDpi));
+  const scale=pxW/L.printableW;
+  const masterW=Math.round(L.posterW*scale), masterH=Math.round(L.posterH*scale);
+  const master=document.createElement("canvas");master.width=masterW;master.height=masterH;
+  const mctx=master.getContext("2d");
+  const fondo=els.transparente.checked?null:els.fondo.value;
+  if(fondo){mctx.fillStyle=fondo;mctx.fillRect(0,0,masterW,masterH);}
+  drawGrid(mctx,L,grid,scale);
+  els.tileGrid.innerHTML="";
+  els.tileGrid.style.gridTemplateColumns="repeat("+Math.min(L.cols,6)+",1fr)";
+  const tile=document.createElement("canvas");tile.width=pxW;tile.height=pxH;
+  const tctx=tile.getContext("2d");
+  for(let r=0;r<L.rows&&(r*L.cols)<limit;r++)for(let c=0;c<L.cols;c++){
+    const idx=r*L.cols+c;if(idx>=limit)break;
+    if(fondo){tctx.fillStyle=fondo;tctx.fillRect(0,0,pxW,pxH);}else{tctx.clearRect(0,0,pxW,pxH);}
+    const tr=getTileRect(L,r,c,scale,pxW,pxH,masterW,masterH);
+    tctx.drawImage(master,tr.sx,tr.sy,tr.sw,tr.sh,tr.dx,tr.dy,tr.dw,tr.dh);
+    const clone=document.createElement("canvas");clone.width=pxW;clone.height=pxH;
+    clone.getContext("2d").drawImage(tile,0,0);
+    const cl=clone.getContext("2d");
+    cl.fillStyle="rgba(0,0,0,.65)";cl.fillRect(4,4,42,16);
+    cl.fillStyle="#fff";cl.font="bold 10px system-ui";cl.textAlign="center";cl.textBaseline="middle";
+    cl.fillText((idx+1)+"/"+total,25,12);
+    els.tileGrid.appendChild(clone);
+  }
+  if(total>limit){const aviso=document.createElement("div");
+    aviso.style.cssText="grid-column:1/-1;text-align:center;color:var(--dim);font-size:11px;padding:6px";
+    aviso.textContent=t("tiles.showing",{shown:limit,total});els.tileGrid.appendChild(aviso);}
+}
+
+/* ═══ MODAL ═══ */
+function sanitizarNombre(s){
+  return s.trim().replace(/[\\/:*?"<>|#%&{}$!'@`+=;,\[\]]+/g,"").replace(/\s+/g,"_").replace(/_+/g,"_")
+    .replace(/^[_.\-]+|[_.\-]+$/g,"").slice(0,60)||"poster";
+}
+function pedirNombre(){
+  return new Promise(function(resolve,reject){
+    const ov=els.modalOverlay, inp=els.nombreInput, prev=els.previewName;
+    inp.value=imgName||"mi-poster";prev.innerHTML="";
+    ov.classList.remove("hidden");setTimeout(function(){inp.focus();inp.select();},30);
+    function update(){const v=inp.value.trim();
+      if(v)prev.innerHTML=t("modal.preview",{name:sanitizarNombre(v)});
+      else prev.innerHTML='<span style="color:var(--bad)">'+t("modal.needName")+'</span>';}
+    update();
+    function cleanup(){ov.classList.add("hidden");
+      els.modalOk.removeEventListener("click",onOk);els.modalCancel.removeEventListener("click",onCancel);
+      inp.removeEventListener("keydown",onKey);inp.removeEventListener("input",onInput);}
+    function onOk(){const v=inp.value.trim();if(!v){inp.focus();inp.style.borderColor="var(--bad)";return;}
+      cleanup();resolve(sanitizarNombre(v));}
+    function onCancel(){cleanup();reject(new Error("cancelled"));}
+    function onKey(e){if(e.key==="Enter"){e.preventDefault();onOk();}if(e.key==="Escape"){e.preventDefault();onCancel();}}
+    function onInput(){inp.style.borderColor="";update();}
+    els.modalOk.addEventListener("click",onOk);els.modalCancel.addEventListener("click",onCancel);
+    inp.addEventListener("keydown",onKey);inp.addEventListener("input",onInput);
+  });
+}
+
+/* ═══ PDF ═══ */
+function generarPDF(){
+  if(imagenes.length===0){alert(t("alert.noImage"));return;}
+  for(const im of imagenes){
+    if(im.naturalWidth>30000||im.naturalHeight>30000||im.naturalWidth*im.naturalHeight>250e6){
+      alert(t("alert.tooBig",{name:im.nombre||"?"}));return;}
+  }
+  const L=getLayout();if(!L){alert(t("alert.invalidPaper"));return;}
+  const grid=getGridLayout(L);if(!grid){alert(t("alert.invalidGrid"));return;}
+  const total=L.cols*L.rows;
+  if(total>200&&!confirm(t("alert.confirmPages",{n:total})))return;
+  if(els.transparente.checked&&els.formato.value==="jpeg"){
+    els.formato.value="png";alert(t("alert.transparencyPng"));}
+  pedirNombre().then(function(nombreFinal){ejecutarGeneracion(nombreFinal,L,grid,total);})
+    .catch(function(){els.prog.textContent=t("prog.cancelled");setTimeout(()=>els.prog.textContent="",2500);});
+}
+function ejecutarGeneracion(nombreFinal,L,grid,total){
+  cancelado=false;const jsPDF=window.jspdf.jsPDF;
+  const maxSide=12000,maxArea=100e6;
+  let dpi=+els.dpi.value;
+  dpi=Math.min(dpi,maxSide/(L.printableW/25.4),maxSide/(L.printableH/25.4));
+  const pxW=Math.max(1,Math.round(L.printableW/25.4*dpi));
+  const scale=pxW/L.printableW;
+  let pxH=Math.round(L.printableH*scale);
+  if(pxW*pxH>maxArea){const k=Math.sqrt(maxArea/(pxW*pxH));pxH=Math.max(1,Math.round(pxH*k));}
+  const masterW=Math.round(L.posterW*scale), masterH=Math.round(L.posterH*scale);
+  const master=document.createElement("canvas");master.width=masterW;master.height=masterH;
+  const mctx=master.getContext("2d");
+  const fondo=els.transparente.checked?null:els.fondo.value;
+  if(fondo){mctx.fillStyle=fondo;mctx.fillRect(0,0,masterW,masterH);}
+  drawGrid(mctx,L,grid,scale);
+  const tile=document.createElement("canvas");tile.width=pxW;tile.height=pxH;
+  const tctx=tile.getContext("2d");
+  const fmt=[Math.min(L.pw,L.ph),Math.max(L.pw,L.ph)];
+  const orient=L.pw>L.ph?"landscape":"portrait";
+  const pdf=new jsPDF({unit:"mm",format:fmt,orientation:orient,compress:true});
+  pdf.setProperties({title:nombreFinal+"_poster",creator:"PosterCraft • Free Poster Maker",author:"MeowDev1011"});
+  const mime=els.formato.value==="png"?"image/png":"image/jpeg";
+  const jq=(+els.jpegQ.value||95)/100;
+  const comp=els.compresion.value||"SLOW";
+  els.btn.disabled=true;els.btnTiles.disabled=true;els.btnCancel.style.display="flex";
+  els.barWrap.style.display="block";els.bar.style.width="0%";
+  const t0=performance.now();
+  function toBlob(c,type,q){return new Promise(r=>c.toBlob(r,type,q));}
+  let n=0,r=0,c=0;
+  function paso(){
+    if(cancelado){finalizar(t("prog.cancelled"),true);return;}
+    if(r>=L.rows){
+      const secs=((performance.now()-t0)/1000).toFixed(1);
+      els.prog.textContent=t("prog.done",{s:secs});
+      try{pdf.save(nombreFinal+"_poster.pdf");}catch(e){finalizar(t("prog.error",{msg:e.message}),true);return;}
+      setTimeout(()=>{els.prog.textContent="";els.barWrap.style.display="none";},3500);
+      finalizar(null,false);return;
+    }
+    try{
+      if(fondo){tctx.fillStyle=fondo;tctx.fillRect(0,0,pxW,pxH);}else{tctx.clearRect(0,0,pxW,pxH);}
+      const tr=getTileRect(L,r,c,scale,pxW,pxH,masterW,masterH);
+      tctx.drawImage(master,tr.sx,tr.sy,tr.sw,tr.sh,tr.dx,tr.dy,tr.dw,tr.dh);
+      toBlob(tile,mime,jq).then(function(blob){
+        if(!blob){finalizar(t("prog.noMemory"),true);return;}
+        const url=URL.createObjectURL(blob);
+        try{
+          if(n>0)pdf.addPage(fmt,orient);
+          pdf.addImage(url,mime==="image/png"?"PNG":"JPEG",L.mL,L.mT,L.printableW,L.printableH,undefined,comp);
+        }finally{URL.revokeObjectURL(url);}
+        if(els.marcas.checked&&Math.min(L.mL,L.mT,L.mR,L.mB)>=4){
+          const color=els.marcasColor.value;
+          const rgb=[parseInt(color.slice(1,3),16),parseInt(color.slice(3,5),16),parseInt(color.slice(5,7),16)];
+          pdf.setDrawColor(rgb[0],rgb[1],rgb[2]);pdf.setLineWidth(+els.marcasGrosor.value||0.2);
+          const len=Math.min(+els.marcasLong.value||5,Math.min(L.mL,L.mT,L.mR,L.mB)-1.5);
+          if(len>0){const x0=L.mL,y0=L.mT,x1=L.mL+L.printableW,y1=L.mT+L.printableH;
+            [[x0,y0,1,1],[x1,y0,-1,1],[x0,y1,1,-1],[x1,y1,-1,-1]].forEach(function(e){
+              pdf.line(e[0],e[1],e[0]+e[2]*len,e[1]);pdf.line(e[0],e[1],e[0],e[1]+e[3]*len);});}
+        }
+        if(els.numeros.checked&&L.mB>=5){pdf.setFontSize(8);pdf.setTextColor(140);
+          pdf.text((n+1)+"/"+total,L.mL+L.printableW,L.mT+L.printableH+4,{align:"right"});}
+        n++;const pct=Math.round(n/total*100);
+        els.bar.style.width=pct+"%";
+        els.prog.textContent=t("prog.generating",{n:r*L.cols+c+1,total,pct});
+        c++;if(c>=L.cols){c=0;r++;}
+        setTimeout(paso,0);
+      });
+    }catch(err){finalizar(t("prog.error",{msg:err.message}),true);}
+  }
+  function finalizar(msg,esError){
+    if(msg){els.prog.textContent=msg;if(esError)setTimeout(()=>els.barWrap.style.display="none",3000);}
+    els.btn.disabled=false;els.btnTiles.disabled=false;els.btnCancel.style.display="none";
+    master.width=0;master.height=0;tile.width=0;tile.height=0;render();
+  }
+  paso();
+}
+
+/* ═══ CARGA DE IMÁGENES ═══ */
+els.file.addEventListener("change",function(e){
+  let files=Array.prototype.slice.call(e.target.files);
+  if(files.length===0)return;
+  if(files.length>500){alert(t("img.max"));files=files.slice(0,500);}
+  imagenes=[];let errores=0,pendientes=files.length;const cargadas=[];
+  function terminar(){
+    imagenes=cargadas.filter(x=>x);
+    if(imagenes.length>0){
+      imgName=sanitizarNombre(imagenes[0].nombre.replace(/\.[^.]+$/,""));
+      let txt=t("img.loaded",{n:imagenes.length});
+      if(errores>0)txt+=" · "+errores+" err";
+      els.imgInfo.textContent=txt;
+      let html="";
+      const mostrar=Math.min(imagenes.length,20);
+      for(let i=0;i<mostrar;i++){const im=imagenes[i];
+        html+='<div><span class="name">'+im.nombre+'</span><span class="size">'+im.naturalWidth+'×'+im.naturalHeight+'</span></div>';}
+      if(imagenes.length>20)html+='<div style="text-align:center;color:var(--dim);padding:4px">'+(imagenes.length-20)+'</div>';
+      els.imgList.innerHTML=html;
+    }else{els.imgInfo.textContent=t("img.error");els.imgList.innerHTML="";}
+    render();
+  }
+  files.forEach(function(f,idx){
+    const url=URL.createObjectURL(f), im=new Image();
+    im.onload=function(){im.nombre=f.name;cargadas[idx]=im;URL.revokeObjectURL(url);
+      pendientes--;if(pendientes===0)terminar();};
+    im.onerror=function(){errores++;URL.revokeObjectURL(url);
+      pendientes--;if(pendientes===0)terminar();};
+    im.src=url;
+  });
+});
+
+/* ═══ EVENTOS ═══ */
+document.querySelectorAll("input, select").forEach(function(el){
+  el.addEventListener("input",scheduleRender);el.addEventListener("change",scheduleRender);});
+els.btn.addEventListener("click",generarPDF);
+els.btnTiles.addEventListener("click",function(){
+  const visible=!els.tilePreview.classList.contains("hidden");
+  if(visible){els.tilePreview.classList.add("hidden");els.btnTiles.querySelector("[data-i18n]").textContent=t("btn.preview");}
+  else{els.tilePreview.classList.remove("hidden");els.btnTiles.querySelector("[data-i18n]").textContent=t("btn.hide");generarMiniaturas();}
+});
+els.btnCancel.addEventListener("click",function(){cancelado=true;});
+els.langSelect.addEventListener("change",function(){applyLang(this.value);});
+window.addEventListener("resize",scheduleRender);
+
+/* ═══ ARRANQUE ═══ */
+LANG=detectLang();
+seleccionarPapel("A4 · 210 × 297 mm");
+applyLang(LANG);
+render();
+</script>
+</body>
+</html>
