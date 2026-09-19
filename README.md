@@ -320,9 +320,7 @@ You are free to use, modify, and distribute this software, including for commerc
 
 👤 Author
 
-MeowDev1011
-
-[![Repo: PosterCraft](https://img.shields.io/badge/MeowDev1011?logo=github)](https://github.com/MeowDev1011)
+[![GitHub - MeowDev1011](https://img.shields.io/badge/GitHub-MeowDev1011-181717?logo=github)](https://github.com/MeowDev1011)
 
 ---
 
