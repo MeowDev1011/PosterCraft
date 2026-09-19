@@ -322,8 +322,7 @@ You are free to use, modify, and distribute this software, including for commerc
 
 MeowDev1011
 
-https://img.shields.io/badge/GitHub-MeowDev1011-181717?logo=github
-https://img.shields.io/badge/Repo-PosterCraft-blue?logo=github
+[![Repo: PosterCraft](https://img.shields.io/badge/MeowDev1011?logo=github)](https://github.com/MeowDev1011)
 
 ---
 
@@ -341,7 +340,7 @@ https://img.shields.io/badge/Repo-PosterCraft-blue?logo=github
 
 If PosterCraft saved you from buying an expensive plotter, consider giving it a star on GitHub. It helps others discover the project.
 
-https://img.shields.io/github/stars/MeowDev1011/PosterCraft?style=social
+[![GitHub stars](https://img.shields.io/github/stars/MeowDev1011/PosterCraft?style=social)](https://github.com/MeowDev1011/PosterCraft)
 
 ---
 
