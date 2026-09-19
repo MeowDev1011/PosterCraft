@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>PosterCraft • Free Poster Maker</title>
-<link rel="icon" type="image/png" href="postercraft_logo.png">
+<link rel="icon" type="image/png" href="postcraft_logo.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/4.2.1/jspdf.umd.min.js"></script>
 <style>
 *{box-sizing:border-box}:root{--bg:#0f1115;--card:#161a22;--card2:#1e2430;--line:#2b3342;--txt:#e8eaed;--dim:#98a2b3;--acc:#4f8cff;--ok:#39d98a;--warn:#ffb020;--bad:#ff5c5c}
@@ -108,7 +108,7 @@ svg.ic-xl{width:18px;height:18px}
 <div class="app">
 <aside>
 <div class="brand">
-<img src="postercraft_logo.png" alt="PosterCraft" class="brand-logo"
+<img src="postcraft_logo.png" alt="PosterCraft" class="brand-logo"
      onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
 <div class="brand-svg" style="display:none">
 <svg class="brand-icon" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
@@ -133,12 +133,13 @@ svg.ic-xl{width:18px;height:18px}
 <option value="es">Español</option><option value="en">English</option><option value="pt">Português</option><option value="fr">Français</option><option value="de">Deutsch</option>
 </select></div>
 
-<div class="card"><h2><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span data-i18n="sec.1">1 · Imágenes</span></h2>
+<!-- ═══ BÁSICO ═══ -->
+<div class="card"><h2><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span data-i18n="sec.1">Imágenes</span></h2>
 <input type="file" id="file" accept="image/*" multiple>
 <div class="note" id="imgInfo" data-i18n="img.none">Sin imágenes cargadas</div>
 <div class="img-list" id="imgList"></div></div>
 
-<div class="card"><h2><svg class="ic" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span data-i18n="sec.2">2 · Papel</span></h2>
+<div class="card"><h2><svg class="ic" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span data-i18n="sec.2">Papel</span></h2>
 <div class="field"><label data-i18n="paper.label">Tamaño de hoja</label>
 <input type="text" id="paperSearch" class="paper-search" data-i18n-placeholder="paper.search" placeholder="Buscar: A4, carta, 4x6, foto..." autocomplete="off">
 <input type="hidden" id="papel" value="A4 · 210 × 297 mm">
@@ -149,7 +150,7 @@ svg.ic-xl{width:18px;height:18px}
 <div class="field"><label data-i18n="paper.orientation">Orientación</label><select id="orient">
 <option value="p" data-i18n="paper.portrait">Vertical</option><option value="l" data-i18n="paper.landscape">Horizontal</option></select></div></div>
 
-<div class="card"><h2><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span data-i18n="sec.3">3 · Distribución del póster</span></h2>
+<div class="card"><h2><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span data-i18n="sec.3">Distribución del póster</span></h2>
 <div class="field"><label data-i18n="dist.mode">Modo</label><select id="modo">
 <option value="paginas" data-i18n="dist.byPages">Por número de hojas</option>
 <option value="final" data-i18n="dist.bySize">Por tamaño final</option></select></div>
@@ -160,7 +161,8 @@ svg.ic-xl{width:18px;height:18px}
 <div class="field"><label data-i18n="dist.finalW">Ancho final (cm)</label><input type="number" id="finalW" value="60" min="5"></div>
 <div class="field"><label data-i18n="dist.finalH">Alto final (cm)</label><input type="number" id="finalH" value="80" min="5"></div></div></div></div>
 
-<details class="card"><summary><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span data-i18n="sec.4">Configuración avanzada</span></summary><div class="details-body">
+<!-- ═══ SECCIÓN AVANZADA ═══ -->
+<details class="card"><summary><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span data-i18n="sec.avanzada">Sección Avanzada</span></summary><div class="details-body">
 <div class="field"><label><span data-i18n="adv.overlap">Solape entre hojas (mm)</span> <span class="val" id="solapeVal">10</span></label>
 <input type="range" id="solape" min="0" max="40" value="10"></div>
 <div class="note" style="margin-bottom:8px" data-i18n="adv.overlapNote">Zona repetida en los bordes para pegar sin cortar contenido.</div>
@@ -194,7 +196,8 @@ svg.ic-xl{width:18px;height:18px}
 <div class="field"><label>&nbsp;</label><div class="check"><input type="checkbox" id="transparente"><label for="transparente" style="margin:0" data-i18n="adv.transparent">Transparente</label></div></div></div>
 </div></details>
 
-<details class="card"><summary><svg class="ic" viewBox="0 0 24 24"><path d="M9 2v6L4 18a2 2 0 0 0 1.7 3h12.6A2 2 0 0 0 20 18L15 8V2"/><line x1="8" y1="2" x2="16" y2="2"/><line x1="7.5" y1="13" x2="16.5" y2="13"/></svg><span data-i18n="sec.5">Configuración experta</span> <span class="badge" data-i18n="sec.5.badge">calidad</span></summary><div class="details-body">
+<!-- ═══ SECCIÓN SÚPER AVANZADA ═══ -->
+<details class="card"><summary><svg class="ic" viewBox="0 0 24 24"><path d="M9 2v6L4 18a2 2 0 0 0 1.7 3h12.6A2 2 0 0 0 20 18L15 8V2"/><line x1="8" y1="2" x2="16" y2="2"/><line x1="7.5" y1="13" x2="16.5" y2="13"/></svg><span data-i18n="sec.super">Sección Súper Avanzada</span> <span class="badge" data-i18n="sec.5.badge">calidad</span></summary><div class="details-body">
 <div class="row">
 <div class="field"><label data-i18n="exp.dpi">Resolución (PPP)</label><select id="dpi">
 <option value="96">96</option><option value="150">150</option><option value="200">200</option>
@@ -236,7 +239,6 @@ svg.ic-xl{width:18px;height:18px}
 <div class="bar" id="barWrap"><div id="bar"></div></div>
 <div class="prog" id="prog"></div>
 
-<!-- ═══ FOOTER ═══ -->
 <footer class="footer">
 <span class="footer-credit">
 <span data-i18n="footer.createdBy">Creado por</span>
@@ -289,7 +291,7 @@ settings:'<svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><pa
 /* ═══ i18n ═══ */
 const I18N = {
 es:{app:{title:"PosterCraft",subtitle:"Sube imágenes, divide el póster en hojas y descarga un PDF listo para imprimir y pegar."},
-"sec.1":"1 · Imágenes","sec.2":"2 · Papel","sec.3":"3 · Distribución del póster","sec.4":"Configuración avanzada","sec.5":"Configuración experta","sec.5.badge":"calidad",
+"sec.1":"Imágenes","sec.2":"Papel","sec.3":"Distribución del póster","sec.avanzada":"Sección Avanzada","sec.super":"Sección Súper Avanzada","sec.5.badge":"calidad",
 img:{none:"Sin imágenes cargadas",loaded:"{n} imagen(es) cargada(s)",error:"No se pudieron cargar las imágenes.",max:"Máximo 500 imágenes. Se cargarán las primeras 500."},
 paper:{label:"Tamaño de hoja",search:"Buscar: A4, carta, 4x6, foto...",width:"Ancho (mm)",height:"Alto (mm)",orientation:"Orientación",portrait:"Vertical",landscape:"Horizontal",noResults:"Sin resultados",more:"… y {n} más"},
 dist:{mode:"Modo",byPages:"Por número de hojas",bySize:"Por tamaño final",cols:"Columnas",rows:"Filas",finalW:"Ancho final (cm)",finalH:"Alto final (cm)"},
@@ -303,7 +305,7 @@ prog:{generating:"Generando hoja {n} de {total}… ({pct}%)",done:"Listo ({s}s).
 footer:{createdBy:"Creado por",license:"Licencia MIT",source:"Código fuente"},
 alert:{noImage:"Primero sube al menos una imagen.",invalidPaper:"Configuración de papel inválida.",invalidGrid:"La cuadrícula de imágenes es demasiado pequeña.",confirmPages:"Se generarán {n} páginas. ¿Continuar?",transparencyPng:"El fondo transparente requiere PNG. Se cambió automáticamente.",tooBig:'La imagen "{name}" es demasiado grande.'}},
 en:{app:{title:"PosterCraft",subtitle:"Upload images, split the poster into sheets, and download a print-ready PDF."},
-"sec.1":"1 · Images","sec.2":"2 · Paper","sec.3":"3 · Poster layout","sec.4":"Advanced settings","sec.5":"Expert settings","sec.5.badge":"quality",
+"sec.1":"Images","sec.2":"Paper","sec.3":"Poster layout","sec.avanzada":"Advanced Section","sec.super":"Super Advanced Section","sec.5.badge":"quality",
 img:{none:"No images loaded",loaded:"{n} image(s) loaded",error:"Could not load images.",max:"Maximum 500 images. First 500 will be loaded."},
 paper:{label:"Sheet size",search:"Search: A4, letter, 4x6, photo...",width:"Width (mm)",height:"Height (mm)",orientation:"Orientation",portrait:"Portrait",landscape:"Landscape",noResults:"No results",more:"… and {n} more"},
 dist:{mode:"Mode",byPages:"By number of sheets",bySize:"By final size",cols:"Columns",rows:"Rows",finalW:"Final width (cm)",finalH:"Final height (cm)"},
@@ -317,7 +319,7 @@ prog:{generating:"Generating sheet {n} of {total}… ({pct}%)",done:"Done ({s}s)
 footer:{createdBy:"Created by",license:"MIT License",source:"Source code"},
 alert:{noImage:"Upload at least one image first.",invalidPaper:"Invalid paper configuration.",invalidGrid:"Image grid is too small.",confirmPages:"{n} pages will be generated. Continue?",transparencyPng:"Transparent background requires PNG. Switched automatically.",tooBig:'Image "{name}" is too large.'}},
 pt:{app:{title:"PosterCraft",subtitle:"Envie imagens, divida o pôster em folhas e baixe um PDF pronto para imprimir."},
-"sec.1":"1 · Imagens","sec.2":"2 · Papel","sec.3":"3 · Layout do pôster","sec.4":"Configurações avançadas","sec.5":"Configurações expert","sec.5.badge":"qualidade",
+"sec.1":"Imagens","sec.2":"Papel","sec.3":"Layout do pôster","sec.avanzada":"Seção Avançada","sec.super":"Seção Super Avançada","sec.5.badge":"qualidade",
 img:{none:"Sem imagens carregadas",loaded:"{n} imagem(ns) carregada(s)",error:"Não foi possível carregar as imagens.",max:"Máximo de 500 imagens. As primeiras 500 serão carregadas."},
 paper:{label:"Tamanho da folha",search:"Buscar: A4, carta, 4x6, foto...",width:"Largura (mm)",height:"Altura (mm)",orientation:"Orientação",portrait:"Retrato",landscape:"Paisagem",noResults:"Sem resultados",more:"… e mais {n}"},
 dist:{mode:"Modo",byPages:"Por número de folhas",bySize:"Por tamanho final",cols:"Colunas",rows:"Linhas",finalW:"Largura final (cm)",finalH:"Altura final (cm)"},
@@ -331,7 +333,7 @@ prog:{generating:"Gerando folha {n} de {total}… ({pct}%)",done:"Pronto ({s}s).
 footer:{createdBy:"Criado por",license:"Licença MIT",source:"Código-fonte"},
 alert:{noImage:"Envie pelo menos uma imagem primeiro.",invalidPaper:"Configuração de papel inválida.",invalidGrid:"A grade de imagens é muito pequena.",confirmPages:"Serão geradas {n} páginas. Continuar?",transparencyPng:"Fundo transparente requer PNG. Alterado automaticamente.",tooBig:'A imagem "{name}" é muito grande.'}},
 fr:{app:{title:"PosterCraft",subtitle:"Importez des images, divisez l'affiche en feuilles et téléchargez un PDF prêt à imprimer."},
-"sec.1":"1 · Images","sec.2":"2 · Papier","sec.3":"3 · Mise en page","sec.4":"Paramètres avancés","sec.5":"Paramètres expert","sec.5.badge":"qualité",
+"sec.1":"Images","sec.2":"Papier","sec.3":"Mise en page","sec.avanzada":"Section Avancée","sec.super":"Section Super Avancée","sec.5.badge":"qualité",
 img:{none:"Aucune image chargée",loaded:"{n} image(s) chargée(s)",error:"Impossible de charger les images.",max:"Maximum 500 images. Les 500 premières seront chargées."},
 paper:{label:"Taille de feuille",search:"Rechercher : A4, lettre, 4x6, photo...",width:"Largeur (mm)",height:"Hauteur (mm)",orientation:"Orientation",portrait:"Portrait",landscape:"Paysage",noResults:"Aucun résultat",more:"… et {n} de plus"},
 dist:{mode:"Mode",byPages:"Par nombre de feuilles",bySize:"Par taille finale",cols:"Colonnes",rows:"Lignes",finalW:"Largeur finale (cm)",finalH:"Hauteur finale (cm)"},
@@ -345,7 +347,7 @@ prog:{generating:"Génération feuille {n} sur {total}… ({pct}%)",done:"Termin
 footer:{createdBy:"Créé par",license:"Licence MIT",source:"Code source"},
 alert:{noImage:"Importez d'abord au moins une image.",invalidPaper:"Configuration de papier invalide.",invalidGrid:"La grille d'images est trop petite.",confirmPages:"{n} pages seront générées. Continuer ?",transparencyPng:"Le fond transparent nécessite PNG. Modifié automatiquement.",tooBig:'L\'image "{name}" est trop grande.'}},
 de:{app:{title:"PosterCraft",subtitle:"Bilder hochladen, Poster in Blätter aufteilen und druckfertige PDF herunterladen."},
-"sec.1":"1 · Bilder","sec.2":"2 · Papier","sec.3":"3 · Poster-Layout","sec.4":"Erweiterte Einstellungen","sec.5":"Experten-Einstellungen","sec.5.badge":"Qualität",
+"sec.1":"Bilder","sec.2":"Papier","sec.3":"Poster-Layout","sec.avanzada":"Erweiterte Sektion","sec.super":"Super-Erweiterte Sektion","sec.5.badge":"Qualität",
 img:{none:"Keine Bilder geladen",loaded:"{n} Bild(er) geladen",error:"Bilder konnten nicht geladen werden.",max:"Maximal 500 Bilder. Die ersten 500 werden geladen."},
 paper:{label:"Blattgröße",search:"Suchen: A4, Letter, 4x6, Foto...",width:"Breite (mm)",height:"Höhe (mm)",orientation:"Ausrichtung",portrait:"Hochformat",landscape:"Querformat",noResults:"Keine Ergebnisse",more:"… und {n} weitere"},
 dist:{mode:"Modus",byPages:"Nach Blattanzahl",bySize:"Nach Endgröße",cols:"Spalten",rows:"Zeilen",finalW:"Endbreite (cm)",finalH:"Endhöhe (cm)"},
