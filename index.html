@@ -12,9 +12,9 @@ html,body{height:100%}body{margin:0;font-family:system-ui,-apple-system,"Segoe U
 .app{display:grid;grid-template-columns:380px 1fr;min-height:100vh}@media(max-width:1000px){.app{grid-template-columns:1fr}}
 aside{background:var(--card);border-right:1px solid var(--line);padding:16px 14px 90px;overflow-y:auto;height:100vh}
 @media(max-width:1000px){aside{height:auto;border-right:none;border-bottom:1px solid var(--line)}}
-.brand{margin-bottom:8px;text-align:center}
-.brand-logo{height:90px;width:auto;max-width:100%;display:inline-block}
-.tagline{color:var(--dim);font-size:10px;margin-bottom:14px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;text-align:center}
+.brand{margin:0 0 10px;text-align:center;padding:8px 0}
+.brand-logo{height:150px;width:auto;max-width:100%;display:inline-block}
+.tagline{color:var(--dim);font-size:10px;margin-bottom:16px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;text-align:center}
 .sub{color:var(--dim);font-size:11px;margin-bottom:14px;line-height:1.4;text-align:center}
 .lang-bar{display:flex;gap:6px;align-items:center;margin-bottom:12px;background:#0d1017;border:1px solid var(--line);border-radius:8px;padding:6px 8px}
 .lang-bar select{flex:1;background:transparent;border:0;color:var(--txt);font-size:12px;outline:none;cursor:pointer}
@@ -107,7 +107,7 @@ svg.ic-lg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;st
 <img src="postcraft_logo.png" alt="PosterCraft" class="brand-logo">
 </div>
 <div class="tagline">Free Poster Maker</div>
-<div class="sub" data-i18n="subtitulo">Sube imágenes, divide el póster en hojas y descarga un PDF listo para imprimir y pegar.</div>
+<div class="sub" id="txtSub">Sube imágenes, divide el póster en hojas y descarga un PDF listo para imprimir y pegar.</div>
 
 <div class="lang-bar">
 <svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
@@ -115,102 +115,102 @@ svg.ic-lg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;st
 <option value="es">Español</option><option value="en">English</option><option value="pt">Português</option><option value="fr">Français</option><option value="de">Deutsch</option>
 </select></div>
 
-<div class="card"><h2><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span data-i18n="imagenes">Imágenes</span></h2>
+<div class="card"><h2><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span id="titleImages">Imágenes</span></h2>
 <input type="file" id="file" accept="image/*" multiple>
-<div class="note" id="imgInfo" data-i18n="sinImagenes">Sin imágenes cargadas</div>
+<div class="note" id="imgInfo">Sin imágenes cargadas</div>
 <div class="img-list" id="imgList"></div></div>
 
-<div class="card"><h2><svg class="ic" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span data-i18n="papel">Papel</span></h2>
-<div class="field"><label data-i18n="tamanoHoja">Tamaño de hoja</label>
-<input type="text" id="paperSearch" class="paper-search" data-i18n-placeholder="buscarPapel" placeholder="Buscar: A4, carta, 4x6, foto..." autocomplete="off">
+<div class="card"><h2><svg class="ic" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span id="titlePaper">Papel</span></h2>
+<div class="field"><label id="lblSheetSize">Tamaño de hoja</label>
+<input type="text" id="paperSearch" class="paper-search" placeholder="Buscar: A4, carta, 4x6, foto..." autocomplete="off">
 <input type="hidden" id="papel" value="A4 · 210 × 297 mm">
 <div class="paper-list" id="paperList"></div>
 <div class="paper-selected" id="paperSelected"></div></div>
 <div class="row hidden" id="customWrap">
-<div class="field"><label data-i18n="ancho">Ancho (mm)</label><input type="number" id="customW" value="210" min="20"></div>
-<div class="field"><label data-i18n="alto">Alto (mm)</label><input type="number" id="customH" value="297" min="20"></div></div>
-<div class="field"><label data-i18n="orientacion">Orientación</label><select id="orient">
-<option value="p" data-i18n="vertical">Vertical</option><option value="l" data-i18n="horizontal">Horizontal</option></select></div></div>
+<div class="field"><label id="lblWidth">Ancho (mm)</label><input type="number" id="customW" value="210" min="20"></div>
+<div class="field"><label id="lblHeight">Alto (mm)</label><input type="number" id="customH" value="297" min="20"></div></div>
+<div class="field"><label id="lblOrientation">Orientación</label><select id="orient">
+<option value="p" id="optPortrait">Vertical</option><option value="l" id="optLandscape">Horizontal</option></select></div></div>
 
-<div class="card"><h2><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span data-i18n="distribucion">Distribución del póster</span></h2>
-<div class="field"><label data-i18n="modo">Modo</label><select id="modo">
-<option value="paginas" data-i18n="porHojas">Por número de hojas</option>
-<option value="final" data-i18n="porTamano">Por tamaño final</option></select></div>
+<div class="card"><h2><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span id="titleLayout">Distribución del póster</span></h2>
+<div class="field"><label id="lblMode">Modo</label><select id="modo">
+<option value="paginas" id="optByPages">Por número de hojas</option>
+<option value="final" id="optBySize">Por tamaño final</option></select></div>
 <div id="paginasWrap"><div class="row">
-<div class="field"><label data-i18n="columnas">Columnas</label><input type="number" id="cols" value="2" min="1" max="40"></div>
-<div class="field"><label data-i18n="filas">Filas</label><input type="number" id="rows" value="2" min="1" max="40"></div></div></div>
+<div class="field"><label id="lblCols">Columnas</label><input type="number" id="cols" value="2" min="1" max="40"></div>
+<div class="field"><label id="lblRows">Filas</label><input type="number" id="rows" value="2" min="1" max="40"></div></div></div>
 <div id="finalWrap" class="hidden"><div class="row">
-<div class="field"><label data-i18n="anchoFinal">Ancho final (cm)</label><input type="number" id="finalW" value="60" min="5"></div>
-<div class="field"><label data-i18n="altoFinal">Alto final (cm)</label><input type="number" id="finalH" value="80" min="5"></div></div></div></div>
+<div class="field"><label id="lblFinalW">Ancho final (cm)</label><input type="number" id="finalW" value="60" min="5"></div>
+<div class="field"><label id="lblFinalH">Alto final (cm)</label><input type="number" id="finalH" value="80" min="5"></div></div></div></div>
 
 <details class="card"><summary>
 <svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-<span data-i18n="seccionAvanzada">Sección Avanzada</span></summary><div class="details-body">
-<div class="field"><label><span data-i18n="solape">Solape entre hojas (mm)</span> <span class="val" id="solapeVal">10</span></label>
+<span id="titleAdvanced">Sección Avanzada</span></summary><div class="details-body">
+<div class="field"><label><span id="lblOverlap">Solape entre hojas (mm)</span> <span class="val" id="solapeVal">10</span></label>
 <input type="range" id="solape" min="0" max="40" value="10"></div>
-<div class="note" style="margin-bottom:8px" data-i18n="notaSolape">Zona repetida en los bordes para pegar sin cortar contenido.</div>
-<label style="font-weight:600;color:var(--acc);margin-bottom:5px" data-i18n="margenes">Márgenes individuales (mm)</label>
+<div class="note" style="margin-bottom:8px" id="noteOverlap">Zona repetida en los bordes para pegar sin cortar contenido.</div>
+<label style="font-weight:600;color:var(--acc);margin-bottom:5px" id="lblMargins">Márgenes individuales (mm)</label>
 <div class="row4" style="margin-bottom:8px">
-<div class="field"><label data-i18n="sup">Sup.</label><input type="number" id="mTop" value="10" min="0" max="50"></div>
-<div class="field"><label data-i18n="inf">Inf.</label><input type="number" id="mBottom" value="10" min="0" max="50"></div>
-<div class="field"><label data-i18n="izq">Izq.</label><input type="number" id="mLeft" value="10" min="0" max="50"></div>
-<div class="field"><label data-i18n="der">Der.</label><input type="number" id="mRight" value="10" min="0" max="50"></div></div>
-<label style="font-weight:600;color:var(--acc);margin-bottom:5px" data-i18n="composicion">Composición de imágenes</label>
-<div class="note" style="margin-bottom:5px" data-i18n="notaComposicion">1 imagen → cubre todo el póster y se divide en hojas. Varias → cuadrícula.</div>
+<div class="field"><label id="lblTop">Sup.</label><input type="number" id="mTop" value="10" min="0" max="50"></div>
+<div class="field"><label id="lblBottom">Inf.</label><input type="number" id="mBottom" value="10" min="0" max="50"></div>
+<div class="field"><label id="lblLeft">Izq.</label><input type="number" id="mLeft" value="10" min="0" max="50"></div>
+<div class="field"><label id="lblRight">Der.</label><input type="number" id="mRight" value="10" min="0" max="50"></div></div>
+<label style="font-weight:600;color:var(--acc);margin-bottom:5px" id="lblCompose">Composición de imágenes</label>
+<div class="note" style="margin-bottom:5px" id="noteCompose">1 imagen → cubre todo el póster y se divide en hojas. Varias → cuadrícula.</div>
 <div class="row" style="margin-bottom:6px">
-<div class="field"><label data-i18n="columnasImg">Columnas img.</label><input type="number" id="imgCols" value="3" min="1" max="50"></div>
-<div class="field"><label data-i18n="filasImg">Filas img.</label><input type="number" id="imgRows" value="3" min="1" max="50"></div></div>
-<div class="note" style="margin-bottom:6px"><span data-i18n="celdas">Celdas:</span> <b id="totalCeldas">9</b>.</div>
+<div class="field"><label id="lblImgCols">Columnas img.</label><input type="number" id="imgCols" value="3" min="1" max="50"></div>
+<div class="field"><label id="lblImgRows">Filas img.</label><input type="number" id="imgRows" value="3" min="1" max="50"></div></div>
+<div class="note" style="margin-bottom:6px"><span id="lblCells">Celdas:</span> <b id="totalCeldas">9</b>.</div>
 <div class="row" style="margin-bottom:6px">
-<div class="field"><label data-i18n="espaciado">Espaciado (mm)</label><input type="number" id="gap" value="2" min="0" max="30" step="0.5"></div>
-<div class="field"><label data-i18n="borde">Borde (mm)</label><input type="number" id="borde" value="0" min="0" max="10" step="0.5"></div></div>
-<div class="field"><label data-i18n="encajeCelda">Encaje por celda</label><select id="ajusteImg">
-<option value="cover" data-i18n="cubrir">Cubrir (recorta)</option>
-<option value="contain" data-i18n="contener">Contener (completa)</option>
-<option value="stretch" data-i18n="estirar">Estirar</option></select></div>
-<div class="field"><label data-i18n="encajeGlobal">Encaje global (1 imagen)</label><select id="ajuste">
-<option value="cover" data-i18n="cubrir">Cubrir (recorta)</option>
-<option value="contain" data-i18n="contener">Contener (completa)</option>
-<option value="stretch" data-i18n="estirar">Estirar</option></select></div>
-<div class="field"><label data-i18n="colorBorde">Color de borde</label><input type="color" id="bordeColor" value="#ffffff"></div>
-<label style="font-weight:600;color:var(--acc);margin:8px 0 5px" data-i18n="fondo">Fondo</label>
+<div class="field"><label id="lblGap">Espaciado (mm)</label><input type="number" id="gap" value="2" min="0" max="30" step="0.5"></div>
+<div class="field"><label id="lblBorder">Borde (mm)</label><input type="number" id="borde" value="0" min="0" max="10" step="0.5"></div></div>
+<div class="field"><label id="lblFitCell">Encaje por celda</label><select id="ajusteImg">
+<option value="cover" id="optCellCover">Cubrir (recorta)</option>
+<option value="contain" id="optCellContain">Contener (completa)</option>
+<option value="stretch" id="optCellStretch">Estirar</option></select></div>
+<div class="field"><label id="lblFitGlobal">Encaje global (1 imagen)</label><select id="ajuste">
+<option value="cover" id="optGlobalCover">Cubrir (recorta)</option>
+<option value="contain" id="optGlobalContain">Contener (completa)</option>
+<option value="stretch" id="optGlobalStretch">Estirar</option></select></div>
+<div class="field"><label id="lblBorderColor">Color de borde</label><input type="color" id="bordeColor" value="#ffffff"></div>
+<label style="font-weight:600;color:var(--acc);margin:8px 0 5px" id="lblBackground">Fondo</label>
 <div class="row">
-<div class="field"><label data-i18n="color">Color</label><input type="color" id="fondo" value="#ffffff"></div>
-<div class="field"><label>&nbsp;</label><div class="check"><input type="checkbox" id="transparente"><label for="transparente" style="margin:0" data-i18n="transparente">Transparente</label></div></div></div>
+<div class="field"><label id="lblColor">Color</label><input type="color" id="fondo" value="#ffffff"></div>
+<div class="field"><label>&nbsp;</label><div class="check"><input type="checkbox" id="transparente"><label for="transparente" style="margin:0" id="lblTransparent">Transparente</label></div></div></div>
 </div></details>
 
 <details class="card"><summary>
 <svg class="ic" viewBox="0 0 24 24"><path d="M9 2v6L4 18a2 2 0 0 0 1.7 3h12.6A2 2 0 0 0 20 18L15 8V2"/><line x1="8" y1="2" x2="16" y2="2"/><line x1="7.5" y1="13" x2="16.5" y2="13"/></svg>
-<span data-i18n="seccionSuper">Sección Súper Avanzada</span>
-<span class="badge" data-i18n="badgePrecision">Precisión &amp; Calidad</span></summary><div class="details-body">
+<span id="titleSuper">Sección Súper Avanzada</span>
+<span class="badge" id="badgePrecision">Precisión &amp; Calidad</span></summary><div class="details-body">
 <div class="row">
-<div class="field"><label data-i18n="resolucion">Resolución (PPP)</label><select id="dpi">
+<div class="field"><label id="lblResolution">Resolución (PPP)</label><select id="dpi">
 <option value="96">96</option><option value="150">150</option><option value="200">200</option>
 <option value="300" selected>300</option><option value="400">400</option><option value="600">600</option><option value="1200">1200</option></select></div>
-<div class="field"><label data-i18n="formato">Formato</label><select id="formato">
+<div class="field"><label id="lblFormat">Formato</label><select id="formato">
 <option value="jpeg">JPEG</option><option value="png">PNG</option></select></div></div>
-<div class="field"><label><span data-i18n="calidadJpeg">Calidad JPEG</span> <span class="val" id="jpegQVal">95%</span></label>
+<div class="field"><label><span id="lblJpegQ">Calidad JPEG</span> <span class="val" id="jpegQVal">95%</span></label>
 <input type="range" id="jpegQ" min="50" max="100" value="95"></div>
-<div class="field"><label data-i18n="compresion">Compresión jsPDF</label><select id="compresion">
+<div class="field"><label id="lblCompression">Compresión jsPDF</label><select id="compresion">
 <option value="SLOW">SLOW · HQ</option><option value="MEDIUM">MEDIUM</option>
 <option value="FAST">FAST</option><option value="NONE">NONE</option></select></div>
-<div class="check"><input type="checkbox" id="marcas" checked><label for="marcas" style="margin:0" data-i18n="marcasCorte">Marcas de corte</label></div>
+<div class="check"><input type="checkbox" id="marcas" checked><label for="marcas" style="margin:0" id="lblMarks">Marcas de corte</label></div>
 <div class="row3">
-<div class="field"><label data-i18n="grosor">Grosor (pt)</label><input type="number" id="marcasGrosor" value="0.2" min="0.1" max="2" step="0.1"></div>
-<div class="field"><label data-i18n="longitud">Longitud (mm)</label><input type="number" id="marcasLong" value="5" min="2" max="15"></div>
-<div class="field"><label data-i18n="color">Color</label><input type="color" id="marcasColor" value="#000000"></div></div>
-<div class="check"><input type="checkbox" id="numeros" checked><label for="numeros" style="margin:0" data-i18n="numerar">Numerar páginas</label></div>
+<div class="field"><label id="lblThickness">Grosor (pt)</label><input type="number" id="marcasGrosor" value="0.2" min="0.1" max="2" step="0.1"></div>
+<div class="field"><label id="lblLength">Longitud (mm)</label><input type="number" id="marcasLong" value="5" min="2" max="15"></div>
+<div class="field"><label id="lblMarksColor">Color</label><input type="color" id="marcasColor" value="#000000"></div></div>
+<div class="check"><input type="checkbox" id="numeros" checked><label for="numeros" style="margin:0" id="lblNumbers">Numerar páginas</label></div>
 </div></details>
 
 <button class="go" id="btnPdf" disabled>
 <svg class="ic-lg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 7v8"/><path d="M8.5 11.5L12 15l3.5-3.5"/></svg>
-<span data-i18n="descargarPdf">Descargar PDF</span></button>
+<span id="txtDownload">Descargar PDF</span></button>
 <button class="ghost" id="btnTiles" disabled>
 <svg class="ic" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-<span data-i18n="verVistaPrevia">Ver vista previa de hojas</span></button>
+<span id="txtPreview">Ver vista previa de hojas</span></button>
 <button class="ghost" id="btnCancel" style="display:none;background:#e04848">
 <svg class="ic" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-<span data-i18n="cancelarGeneracion">Cancelar generación</span></button>
+<span id="txtCancel">Cancelar generación</span></button>
 </aside>
 
 <main>
@@ -219,38 +219,38 @@ svg.ic-lg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;st
 <div class="tile-preview" id="tilePreview">
 <h2 style="font-size:12px;margin:0 0 8px;color:var(--acc)">
 <svg class="ic" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-<span data-i18n="tituloVistaPrevia">Vista previa de cada hoja del PDF</span></h2>
+<span id="titleTiles">Vista previa de cada hoja del PDF</span></h2>
 <div class="tile-grid" id="tileGrid"></div></div>
 <div class="bar" id="barWrap"><div id="bar"></div></div>
 <div class="prog" id="prog"></div>
 
 <footer class="footer">
 <span class="footer-credit">
-<span data-i18n="creadoPor">Creado por</span>
+<span id="txtCreatedBy">Creado por</span>
 <a href="https://github.com/MeowDev1011" target="_blank" rel="noopener">
 <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
 MeowDev1011</a></span>
 <span class="footer-sep"></span>
 <a class="footer-btn" href="https://github.com/MeowDev1011/PosterCraft/blob/main/LICENSE" target="_blank" rel="noopener">
 <svg class="ic" viewBox="0 0 24 24"><path d="M16 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z"/><path d="M2 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
-<span data-i18n="licencia">Licencia MIT</span></a>
+<span id="txtLicense">Licencia MIT</span></a>
 <a class="footer-btn" href="https://github.com/MeowDev1011/PosterCraft" target="_blank" rel="noopener">
 <svg class="ic-fill" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
-<span data-i18n="codigoFuente">Código fuente</span></a>
+<span id="txtSource">Código fuente</span></a>
 </footer>
 </main>
 </div>
 
 <div class="modal-overlay hidden" id="modalOverlay"><div class="modal">
-<h2><svg class="ic-lg" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg><span data-i18n="tituloModal">Ponle nombre a tu creación</span></h2>
-<p><span data-i18n="seGuardaraComo">Se guardará como</span> <code>{nombre}_poster.pdf</code></p>
-<input type="text" id="nombreInput" data-i18n-placeholder="placeholderNombre" placeholder="mi-poster" maxlength="80">
+<h2><svg class="ic-lg" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg><span id="txtModalTitle">Ponle nombre a tu creación</span></h2>
+<p><span id="txtModalDesc">Se guardará como</span> <code>{nombre}_poster.pdf</code></p>
+<input type="text" id="nombreInput" placeholder="mi-poster" maxlength="80">
 <div class="preview-name" id="previewName"></div>
 <div class="btns">
-<button class="btn-cancel" id="modalCancel" data-i18n="cancelar">Cancelar</button>
+<button class="btn-cancel" id="modalCancel">Cancelar</button>
 <button class="btn-ok" id="modalOk">
 <svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 7v8"/><path d="M8.5 11.5L12 15l3.5-3.5"/></svg>
-<span data-i18n="descargarPdf">Descargar PDF</span></button></div>
+<span id="txtModalOk">Descargar PDF</span></button></div>
 </div></div>
 
 <script>
@@ -272,175 +272,254 @@ palette:'<svg class="ic" viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r=".5"/>
 megaphone:'<svg class="ic" viewBox="0 0 24 24"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>',
 settings:'<svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>'};
 
-/* ═══ i18n — claves limpias, sin códigos raros ═══ */
+/* ═══ i18n ═══ */
 const I18N={
-es:{
-subtitulo:"Sube imágenes, divide el póster en hojas y descarga un PDF listo para imprimir y pegar.",
-imagenes:"Imágenes",papel:"Papel",distribucion:"Distribución del póster",
-seccionAvanzada:"Sección Avanzada",seccionSuper:"Sección Súper Avanzada",
-badgePrecision:"Precisión & Calidad",
-sinImagenes:"Sin imágenes cargadas",nImagenes:"{n} imagen(es) cargada(s)",errImagenes:"No se pudieron cargar las imágenes.",maxImagenes:"Máximo 500 imágenes. Se cargarán las primeras 500.",
-tamanoHoja:"Tamaño de hoja",buscarPapel:"Buscar: A4, carta, 4x6, foto...",ancho:"Ancho (mm)",alto:"Alto (mm)",
-orientacion:"Orientación",vertical:"Vertical",horizontal:"Horizontal",sinResultados:"Sin resultados",masResultados:"… y {n} más",
-modo:"Modo",porHojas:"Por número de hojas",porTamano:"Por tamaño final",columnas:"Columnas",filas:"Filas",anchoFinal:"Ancho final (cm)",altoFinal:"Alto final (cm)",
-solape:"Solape entre hojas (mm)",notaSolape:"Zona repetida en los bordes para pegar sin cortar contenido.",
-margenes:"Márgenes individuales (mm)",sup:"Sup.",inf:"Inf.",izq:"Izq.",der:"Der.",
-composicion:"Composición de imágenes",notaComposicion:"1 imagen → cubre todo el póster y se divide en hojas. Varias → cuadrícula.",
-columnasImg:"Columnas img.",filasImg:"Filas img.",celdas:"Celdas:",espaciado:"Espaciado (mm)",borde:"Borde (mm)",
-encajeCelda:"Encaje por celda",encajeGlobal:"Encaje global (1 imagen)",cubrir:"Cubrir (recorta)",contener:"Contener (completa)",estirar:"Estirar",
-colorBorde:"Color de borde",fondo:"Fondo",color:"Color",transparente:"Transparente",
-resolucion:"Resolución (PPP)",formato:"Formato",calidadJpeg:"Calidad JPEG",compresion:"Compresión jsPDF",
-marcasCorte:"Marcas de corte",grosor:"Grosor (pt)",longitud:"Longitud (mm)",numerar:"Numerar páginas",
-descargarPdf:"Descargar PDF",descargarPdfN:"Descargar PDF · {n} hoja(s) · {w} × {h} cm",
-verVistaPrevia:"Ver vista previa de hojas",ocultarVistaPrevia:"Ocultar vista previa",cancelarGeneracion:"Cancelar generación",
-tituloVistaPrevia:"Vista previa de cada hoja del PDF",mostrandoHojas:"Mostrando {shown} de {total} hojas. El PDF tendrá las {total}.",
-tituloModal:"Ponle nombre a tu creación",seGuardaraComo:"Se guardará como",placeholderNombre:"mi-poster",cancelar:"Cancelar",
-previewNombre:"Se guardará como: {name}_poster.pdf",necesitaNombre:"Escribe un nombre para continuar",
-statFinal:"Tamaño final real",statPulgadas:"Pulgadas",statHojas:"Hojas totales",statImagenes:"Imágenes",statCeldas:"Celdas de imagen",
-statArea:"Área imprimible",statResolucion:"Resolución por hoja",statCalidad:"Calidad de imagen",
-avisoMargenes:"Reduce los márgenes",avisoMargenesMsg:"Márgenes demasiado grandes para este papel",celdaCompleta:"1 (cubre póster)",
-progGenerando:"Generando hoja {n} de {total}… ({pct}%)",progListo:"Listo ({s}s). Descargando…",progCancelado:"Generación cancelada.",
-progError:"Error: {msg}",progSinMemoria:"El navegador no pudo procesar la imagen (memoria insuficiente).",
-creadoPor:"Creado por",licencia:"Licencia MIT",codigoFuente:"Código fuente",
-alertSinImagen:"Primero sube al menos una imagen.",alertPapelInvalido:"Configuración de papel inválida.",
-alertCuadriculaInvalida:"La cuadrícula de imágenes es demasiado pequeña.",alertConfirmarPaginas:"Se generarán {n} páginas. ¿Continuar?",
-alertTransparenciaPng:"El fondo transparente requiere PNG. Se cambió automáticamente.",alertImagenGrande:'La imagen "{name}" es demasiado grande.'},
-en:{
-subtitulo:"Upload images, split the poster into sheets, and download a print-ready PDF.",
-imagenes:"Images",papel:"Paper",distribucion:"Poster layout",
-seccionAvanzada:"Advanced Section",seccionSuper:"Super Advanced Section",
-badgePrecision:"Precision & Quality",
-sinImagenes:"No images loaded",nImagenes:"{n} image(s) loaded",errImagenes:"Could not load images.",maxImagenes:"Maximum 500 images. First 500 will be loaded.",
-tamanoHoja:"Sheet size",buscarPapel:"Search: A4, letter, 4x6, photo...",ancho:"Width (mm)",alto:"Height (mm)",
-orientacion:"Orientation",vertical:"Portrait",horizontal:"Landscape",sinResultados:"No results",masResultados:"… and {n} more",
-modo:"Mode",porHojas:"By number of sheets",porTamano:"By final size",columnas:"Columns",filas:"Rows",anchoFinal:"Final width (cm)",altoFinal:"Final height (cm)",
-solape:"Sheet overlap (mm)",notaSolape:"Repeated margin on edges to glue without cutting content.",
-margenes:"Individual margins (mm)",sup:"Top",inf:"Bottom",izq:"Left",der:"Right",
-composicion:"Image composition",notaComposicion:"1 image → covers the whole poster and splits into sheets. Several → grid.",
-columnasImg:"Image columns",filasImg:"Image rows",celdas:"Cells:",espaciado:"Spacing (mm)",borde:"Border (mm)",
-encajeCelda:"Fit per cell",encajeGlobal:"Global fit (1 image)",cubrir:"Cover (crop)",contener:"Contain (full)",estirar:"Stretch",
-colorBorde:"Border color",fondo:"Background",color:"Color",transparente:"Transparent",
-resolucion:"Resolution (DPI)",formato:"Format",calidadJpeg:"JPEG quality",compresion:"jsPDF compression",
-marcasCorte:"Crop marks",grosor:"Thickness (pt)",longitud:"Length (mm)",numerar:"Page numbers",
-descargarPdf:"Download PDF",descargarPdfN:"Download PDF · {n} sheet(s) · {w} × {h} cm",
-verVistaPrevia:"Preview sheets",ocultarVistaPrevia:"Hide preview",cancelarGeneracion:"Cancel generation",
-tituloVistaPrevia:"Preview of each PDF sheet",mostrandoHojas:"Showing {shown} of {total} sheets. The PDF will have all {total}.",
-tituloModal:"Name your creation",seGuardaraComo:"Will be saved as",placeholderNombre:"my-poster",cancelar:"Cancel",
-previewNombre:"Will be saved as: {name}_poster.pdf",necesitaNombre:"Type a name to continue",
-statFinal:"Final real size",statPulgadas:"Inches",statHojas:"Total sheets",statImagenes:"Images",statCeldas:"Image cells",
-statArea:"Printable area",statResolucion:"Resolution per sheet",statCalidad:"Image quality",
-avisoMargenes:"Reduce margins",avisoMargenesMsg:"Margins too large for this paper",celdaCompleta:"1 (covers poster)",
-progGenerando:"Generating sheet {n} of {total}… ({pct}%)",progListo:"Done ({s}s). Downloading…",progCancelado:"Generation cancelled.",
-progError:"Error: {msg}",progSinMemoria:"The browser could not process the image (out of memory).",
-creadoPor:"Created by",licencia:"MIT License",codigoFuente:"Source code",
-alertSinImagen:"Upload at least one image first.",alertPapelInvalido:"Invalid paper configuration.",
-alertCuadriculaInvalida:"Image grid is too small.",alertConfirmarPaginas:"{n} pages will be generated. Continue?",
-alertTransparenciaPng:"Transparent background requires PNG. Switched automatically.",alertImagenGrande:'Image "{name}" is too large.'},
-pt:{
-subtitulo:"Envie imagens, divida o pôster em folhas e baixe um PDF pronto para imprimir.",
-imagenes:"Imagens",papel:"Papel",distribucion:"Layout do pôster",
-seccionAvanzada:"Seção Avançada",seccionSuper:"Seção Super Avançada",
-badgePrecision:"Precisão & Qualidade",
-sinImagenes:"Sem imagens carregadas",nImagenes:"{n} imagem(ns) carregada(s)",errImagenes:"Não foi possível carregar as imagens.",maxImagenes:"Máximo de 500 imagens.",
-tamanoHoja:"Tamanho da folha",buscarPapel:"Buscar: A4, carta, 4x6, foto...",ancho:"Largura (mm)",alto:"Altura (mm)",
-orientacion:"Orientação",vertical:"Retrato",horizontal:"Paisagem",sinResultados:"Sem resultados",masResultados:"… e mais {n}",
-modo:"Modo",porHojas:"Por número de folhas",porTamano:"Por tamanho final",columnas:"Colunas",filas:"Linhas",anchoFinal:"Largura final (cm)",altoFinal:"Altura final (cm)",
-solape:"Sobreposição (mm)",notaSolape:"Margem repetida nas bordas para colar sem cortar conteúdo.",
-margenes:"Margens individuais (mm)",sup:"Sup.",inf:"Inf.",izq:"Esq.",der:"Dir.",
-composicion:"Composição de imagens",notaComposicion:"1 imagem → cobre todo o pôster. Várias → grade.",
-columnasImg:"Colunas img.",filasImg:"Linhas img.",celdas:"Células:",espaciado:"Espaçamento (mm)",borde:"Borda (mm)",
-encajeCelda:"Ajuste por célula",encajeGlobal:"Ajuste global (1 img)",cubrir:"Cobrir (corta)",contener:"Conter (completa)",estirar:"Esticar",
-colorBorde:"Cor da borda",fondo:"Fundo",color:"Cor",transparente:"Transparente",
-resolucion:"Resolução (DPI)",formato:"Formato",calidadJpeg:"Qualidade JPEG",compresion:"Compressão jsPDF",
-marcasCorte:"Marcas de corte",grosor:"Espessura (pt)",longitud:"Comprimento (mm)",numerar:"Numerar páginas",
-descargarPdf:"Baixar PDF",descargarPdfN:"Baixar PDF · {n} folha(s) · {w} × {h} cm",
-verVistaPrevia:"Pré-visualizar folhas",ocultarVistaPrevia:"Ocultar pré-visualização",cancelarGeneracion:"Cancelar geração",
-tituloVistaPrevia:"Pré-visualização de cada folha",mostrandoHojas:"Mostrando {shown} de {total} folhas. O PDF terá todas as {total}.",
-tituloModal:"Dê um nome à sua criação",seGuardaraComo:"Será salvo como",placeholderNombre:"meu-poster",cancelar:"Cancelar",
-previewNombre:"Será salvo como: {name}_poster.pdf",necesitaNombre:"Digite um nome para continuar",
-statFinal:"Tamanho final real",statPulgadas:"Polegadas",statHojas:"Total de folhas",statImagenes:"Imagens",statCeldas:"Células de imagem",
-statArea:"Área imprimível",statResolucion:"Resolução por folha",statCalidad:"Qualidade da imagem",
-avisoMargenes:"Reduza as margens",avisoMargenesMsg:"Margens muito grandes para este papel",celdaCompleta:"1 (cobre pôster)",
-progGenerando:"Gerando folha {n} de {total}… ({pct}%)",progListo:"Pronto ({s}s). Baixando…",progCancelado:"Geração cancelada.",
-progError:"Erro: {msg}",progSinMemoria:"O navegador não pôde processar a imagem.",
-creadoPor:"Criado por",licencia:"Licença MIT",codigoFuente:"Código-fonte",
-alertSinImagen:"Envie pelo menos uma imagem primeiro.",alertPapelInvalido:"Configuração de papel inválida.",
-alertCuadriculaInvalida:"A grade de imagens é muito pequena.",alertConfirmarPaginas:"Serão geradas {n} páginas. Continuar?",
-alertTransparenciaPng:"Fundo transparente requer PNG.",alertImagenGrande:'A imagem "{name}" é muito grande.'},
-fr:{
-subtitulo:"Importez des images, divisez l'affiche en feuilles et téléchargez un PDF prêt à imprimer.",
-imagenes:"Images",papel:"Papier",distribucion:"Mise en page",
-seccionAvanzada:"Section Avancée",seccionSuper:"Section Super Avancée",
-badgePrecision:"Précision & Qualité",
-sinImagenes:"Aucune image chargée",nImagenes:"{n} image(s) chargée(s)",errImagenes:"Impossible de charger les images.",maxImagenes:"Maximum 500 images.",
-tamanoHoja:"Taille de feuille",buscarPapel:"Rechercher : A4, lettre, 4x6, photo...",ancho:"Largeur (mm)",alto:"Hauteur (mm)",
-orientacion:"Orientation",vertical:"Portrait",horizontal:"Paysage",sinResultados:"Aucun résultat",masResultados:"… et {n} de plus",
-modo:"Mode",porHojas:"Par nombre de feuilles",porTamano:"Par taille finale",columnas:"Colonnes",filas:"Lignes",anchoFinal:"Largeur finale (cm)",altoFinal:"Hauteur finale (cm)",
-solape:"Chevauchement (mm)",notaSolape:"Marge répétée sur les bords pour coller sans couper le contenu.",
-margenes:"Marges individuelles (mm)",sup:"Haut",inf:"Bas",izq:"Gauche",der:"Droite",
-composicion:"Composition d'images",notaComposicion:"1 image → couvre toute l'affiche. Plusieurs → grille.",
-columnasImg:"Colonnes img.",filasImg:"Lignes img.",celdas:"Cellules :",espaciado:"Espacement (mm)",borde:"Bordure (mm)",
-encajeCelda:"Ajustement par cellule",encajeGlobal:"Ajustement global",cubrir:"Couvrir (rogner)",contener:"Contenir (complète)",estirar:"Étirer",
-colorBorde:"Couleur de bordure",fondo:"Fond",color:"Couleur",transparente:"Transparent",
-resolucion:"Résolution (PPP)",formato:"Format",calidadJpeg:"Qualité JPEG",compresion:"Compression jsPDF",
-marcasCorte:"Traits de coupe",grosor:"Épaisseur (pt)",longitud:"Longueur (mm)",numerar:"Numéroter les pages",
-descargarPdf:"Télécharger PDF",descargarPdfN:"Télécharger PDF · {n} feuille(s) · {w} × {h} cm",
-verVistaPrevia:"Aperçu des feuilles",ocultarVistaPrevia:"Masquer l'aperçu",cancelarGeneracion:"Annuler la génération",
-tituloVistaPrevia:"Aperçu de chaque feuille",mostrandoHojas:"Affichage de {shown} sur {total} feuilles. Le PDF aura toutes les {total}.",
-tituloModal:"Nommez votre création",seGuardaraComo:"Sera enregistré sous",placeholderNombre:"mon-affiche",cancelar:"Annuler",
-previewNombre:"Sera enregistré sous : {name}_poster.pdf",necesitaNombre:"Saisissez un nom pour continuer",
-statFinal:"Taille finale réelle",statPulgadas:"Pouces",statHojas:"Feuilles totales",statImagenes:"Images",statCeldas:"Cellules d'image",
-statArea:"Zone imprimable",statResolucion:"Résolution par feuille",statCalidad:"Qualité d'image",
-avisoMargenes:"Réduisez les marges",avisoMargenesMsg:"Marges trop grandes pour ce papier",celdaCompleta:"1 (couvre l'affiche)",
-progGenerando:"Génération feuille {n} sur {total}… ({pct}%)",progListo:"Terminé ({s}s). Téléchargement…",progCancelado:"Génération annulée.",
-progError:"Erreur : {msg}",progSinMemoria:"Le navigateur n'a pas pu traiter l'image.",
-creadoPor:"Créé par",licencia:"Licence MIT",codigoFuente:"Code source",
-alertSinImagen:"Importez d'abord au moins une image.",alertPapelInvalido:"Configuration de papier invalide.",
-alertCuadriculaInvalida:"La grille d'images est trop petite.",alertConfirmarPaginas:"{n} pages seront générées. Continuer ?",
-alertTransparenciaPng:"Le fond transparent nécessite PNG.",alertImagenGrande:'L\'image "{name}" est trop grande.'},
-de:{
-subtitulo:"Bilder hochladen, Poster in Blätter aufteilen und druckfertige PDF herunterladen.",
-imagenes:"Bilder",papel:"Papier",distribucion:"Poster-Layout",
-seccionAvanzada:"Erweiterte Sektion",seccionSuper:"Super-Erweiterte Sektion",
-badgePrecision:"Präzision & Qualität",
-sinImagenes:"Keine Bilder geladen",nImagenes:"{n} Bild(er) geladen",errImagenes:"Bilder konnten nicht geladen werden.",maxImagenes:"Maximal 500 Bilder.",
-tamanoHoja:"Blattgröße",buscarPapel:"Suchen: A4, Letter, 4x6, Foto...",ancho:"Breite (mm)",alto:"Höhe (mm)",
-orientacion:"Ausrichtung",vertical:"Hochformat",horizontal:"Querformat",sinResultados:"Keine Ergebnisse",masResultados:"… und {n} weitere",
-modo:"Modus",porHojas:"Nach Blattanzahl",porTamano:"Nach Endgröße",columnas:"Spalten",filas:"Zeilen",anchoFinal:"Endbreite (cm)",altoFinal:"Endhöhe (cm)",
-solape:"Überlappung (mm)",notaSolape:"Wiederholter Rand zum Kleben ohne Inhaltsverlust.",
-margenes:"Individuelle Ränder (mm)",sup:"Oben",inf:"Unten",izq:"Links",der:"Rechts",
-composicion:"Bildkomposition",notaComposicion:"1 Bild → deckt das gesamte Poster ab. Mehrere → Raster.",
-columnasImg:"Bildspalten",filasImg:"Bildzeilen",celdas:"Zellen:",espaciado:"Abstand (mm)",borde:"Rahmen (mm)",
-encajeCelda:"Anpassung pro Zelle",encajeGlobal:"Globale Anpassung",cubrir:"Füllen (zuschneiden)",contener:"Einpassen (komplett)",estirar:"Strecken",
-colorBorde:"Rahmenfarbe",fondo:"Hintergrund",color:"Farbe",transparente:"Transparent",
-resolucion:"Auflösung (DPI)",formato:"Format",calidadJpeg:"JPEG-Qualität",compresion:"jsPDF-Kompression",
-marcasCorte:"Schnittmarken",grosor:"Dicke (pt)",longitud:"Länge (mm)",numerar:"Seitenzahlen",
-descargarPdf:"PDF herunterladen",descargarPdfN:"PDF herunterladen · {n} Blatt · {w} × {h} cm",
-verVistaPrevia:"Blätter-Vorschau",ocultarVistaPrevia:"Vorschau ausblenden",cancelarGeneracion:"Generierung abbrechen",
-tituloVistaPrevia:"Vorschau jedes Blattes",mostrandoHojas:"Zeige {shown} von {total} Blättern. Die PDF hat alle {total}.",
-tituloModal:"Benennen Sie Ihre Kreation",seGuardaraComo:"Wird gespeichert als",placeholderNombre:"mein-poster",cancelar:"Abbrechen",
-previewNombre:"Wird gespeichert als: {name}_poster.pdf",necesitaNombre:"Geben Sie einen Namen ein",
-statFinal:"Reale Endgröße",statPulgadas:"Zoll",statHojas:"Blätter gesamt",statImagenes:"Bilder",statCeldas:"Bildzellen",
-statArea:"Druckbereich",statResolucion:"Auflösung pro Blatt",statCalidad:"Bildqualität",
-avisoMargenes:"Ränder reduzieren",avisoMargenesMsg:"Ränder zu groß für dieses Papier",celdaCompleta:"1 (deckt Poster ab)",
-progGenerando:"Erzeuge Blatt {n} von {total}… ({pct}%)",progListo:"Fertig ({s}s). Download…",progCancelado:"Generierung abgebrochen.",
-progError:"Fehler: {msg}",progSinMemoria:"Der Browser konnte das Bild nicht verarbeiten.",
-creadoPor:"Erstellt von",licencia:"MIT-Lizenz",codigoFuente:"Quellcode",
-alertSinImagen:"Laden Sie zuerst mindestens ein Bild hoch.",alertPapelInvalido:"Ungültige Papierkonfiguration.",
-alertCuadriculaInvalida:"Das Bildraster ist zu klein.",alertConfirmarPaginas:"{n} Seiten werden erstellt. Fortfahren?",
-alertTransparenciaPng:"Transparenter Hintergrund erfordert PNG.",alertImagenGrande:'Das Bild "{name}" ist zu groß.'}
-};
+es:{sub:"Sube imágenes, divide el póster en hojas y descarga un PDF listo para imprimir y pegar.",
+titleImages:"Imágenes",titlePaper:"Papel",titleLayout:"Distribución del póster",
+titleAdvanced:"Sección Avanzada",titleSuper:"Sección Súper Avanzada",badgePrecision:"Precisión & Calidad",
+imgNone:"Sin imágenes cargadas",imgLoaded:"{n} imagen(es) cargada(s)",imgError:"No se pudieron cargar las imágenes.",imgMax:"Máximo 500 imágenes.",
+lblSheetSize:"Tamaño de hoja",searchPlaceholder:"Buscar: A4, carta, 4x6, foto...",
+lblWidth:"Ancho (mm)",lblHeight:"Alto (mm)",lblOrientation:"Orientación",optPortrait:"Vertical",optLandscape:"Horizontal",
+noResults:"Sin resultados",moreResults:"… y {n} más",
+lblMode:"Modo",optByPages:"Por número de hojas",optBySize:"Por tamaño final",
+lblCols:"Columnas",lblRows:"Filas",lblFinalW:"Ancho final (cm)",lblFinalH:"Alto final (cm)",
+lblOverlap:"Solape entre hojas (mm)",noteOverlap:"Zona repetida en los bordes para pegar sin cortar contenido.",
+lblMargins:"Márgenes individuales (mm)",lblTop:"Sup.",lblBottom:"Inf.",lblLeft:"Izq.",lblRight:"Der.",
+lblCompose:"Composición de imágenes",noteCompose:"1 imagen → cubre todo el póster y se divide en hojas. Varias → cuadrícula.",
+lblImgCols:"Columnas img.",lblImgRows:"Filas img.",lblCells:"Celdas:",lblGap:"Espaciado (mm)",lblBorder:"Borde (mm)",
+lblFitCell:"Encaje por celda",lblFitGlobal:"Encaje global (1 imagen)",
+optCover:"Cubrir (recorta)",optContain:"Contener (completa)",optStretch:"Estirar",
+lblBorderColor:"Color de borde",lblBackground:"Fondo",lblColor:"Color",lblTransparent:"Transparente",
+lblResolution:"Resolución (PPP)",lblFormat:"Formato",lblJpegQ:"Calidad JPEG",lblCompression:"Compresión jsPDF",
+lblMarks:"Marcas de corte",lblThickness:"Grosor (pt)",lblLength:"Longitud (mm)",lblMarksColor:"Color",lblNumbers:"Numerar páginas",
+txtDownload:"Descargar PDF",txtDownloadN:"Descargar PDF · {n} hoja(s) · {w} × {h} cm",
+txtPreview:"Ver vista previa de hojas",txtPreviewHide:"Ocultar vista previa",txtCancel:"Cancelar generación",
+titleTiles:"Vista previa de cada hoja del PDF",tilesShowing:"Mostrando {shown} de {total} hojas. El PDF tendrá las {total}.",
+txtModalTitle:"Ponle nombre a tu creación",txtModalDesc:"Se guardará como",placeholderName:"mi-poster",txtModalCancel:"Cancelar",txtModalOk:"Descargar PDF",
+previewName:"Se guardará como: {name}_poster.pdf",needName:"Escribe un nombre para continuar",
+statFinal:"Tamaño final real",statInches:"Pulgadas",statPages:"Hojas totales",statImages:"Imágenes",statCells:"Celdas de imagen",
+statArea:"Área imprimible",statResolution:"Resolución por hoja",statQuality:"Calidad de imagen",
+warnReduce:"Reduce los márgenes",warnMargins:"Márgenes demasiado grandes para este papel",cellFull:"1 (cubre póster)",
+progGenerating:"Generando hoja {n} de {total}… ({pct}%)",progDone:"Listo ({s}s). Descargando…",progCancelled:"Generación cancelada.",
+progError:"Error: {msg}",progNoMemory:"El navegador no pudo procesar la imagen.",
+txtCreatedBy:"Creado por",txtLicense:"Licencia MIT",txtSource:"Código fuente",
+alertNoImage:"Primero sube al menos una imagen.",alertInvalidPaper:"Configuración de papel inválida.",
+alertInvalidGrid:"La cuadrícula de imágenes es demasiado pequeña.",alertConfirmPages:"Se generarán {n} páginas. ¿Continuar?",
+alertTransparencyPng:"El fondo transparente requiere PNG. Se cambió automáticamente.",alertTooBig:'La imagen "{name}" es demasiado grande.'},
+en:{sub:"Upload images, split the poster into sheets, and download a print-ready PDF.",
+titleImages:"Images",titlePaper:"Paper",titleLayout:"Poster layout",
+titleAdvanced:"Advanced Section",titleSuper:"Super Advanced Section",badgePrecision:"Precision & Quality",
+imgNone:"No images loaded",imgLoaded:"{n} image(s) loaded",imgError:"Could not load images.",imgMax:"Maximum 500 images.",
+lblSheetSize:"Sheet size",searchPlaceholder:"Search: A4, letter, 4x6, photo...",
+lblWidth:"Width (mm)",lblHeight:"Height (mm)",lblOrientation:"Orientation",optPortrait:"Portrait",optLandscape:"Landscape",
+noResults:"No results",moreResults:"… and {n} more",
+lblMode:"Mode",optByPages:"By number of sheets",optBySize:"By final size",
+lblCols:"Columns",lblRows:"Rows",lblFinalW:"Final width (cm)",lblFinalH:"Final height (cm)",
+lblOverlap:"Sheet overlap (mm)",noteOverlap:"Repeated margin on edges to glue without cutting content.",
+lblMargins:"Individual margins (mm)",lblTop:"Top",lblBottom:"Bottom",lblLeft:"Left",lblRight:"Right",
+lblCompose:"Image composition",noteCompose:"1 image → covers the whole poster and splits into sheets. Several → grid.",
+lblImgCols:"Image columns",lblImgRows:"Image rows",lblCells:"Cells:",lblGap:"Spacing (mm)",lblBorder:"Border (mm)",
+lblFitCell:"Fit per cell",lblFitGlobal:"Global fit (1 image)",
+optCover:"Cover (crop)",optContain:"Contain (full)",optStretch:"Stretch",
+lblBorderColor:"Border color",lblBackground:"Background",lblColor:"Color",lblTransparent:"Transparent",
+lblResolution:"Resolution (DPI)",lblFormat:"Format",lblJpegQ:"JPEG quality",lblCompression:"jsPDF compression",
+lblMarks:"Crop marks",lblThickness:"Thickness (pt)",lblLength:"Length (mm)",lblMarksColor:"Color",lblNumbers:"Page numbers",
+txtDownload:"Download PDF",txtDownloadN:"Download PDF · {n} sheet(s) · {w} × {h} cm",
+txtPreview:"Preview sheets",txtPreviewHide:"Hide preview",txtCancel:"Cancel generation",
+titleTiles:"Preview of each PDF sheet",tilesShowing:"Showing {shown} of {total} sheets. The PDF will have all {total}.",
+txtModalTitle:"Name your creation",txtModalDesc:"Will be saved as",placeholderName:"my-poster",txtModalCancel:"Cancel",txtModalOk:"Download PDF",
+previewName:"Will be saved as: {name}_poster.pdf",needName:"Type a name to continue",
+statFinal:"Final real size",statInches:"Inches",statPages:"Total sheets",statImages:"Images",statCells:"Image cells",
+statArea:"Printable area",statResolution:"Resolution per sheet",statQuality:"Image quality",
+warnReduce:"Reduce margins",warnMargins:"Margins too large for this paper",cellFull:"1 (covers poster)",
+progGenerating:"Generating sheet {n} of {total}… ({pct}%)",progDone:"Done ({s}s). Downloading…",progCancelled:"Generation cancelled.",
+progError:"Error: {msg}",progNoMemory:"The browser could not process the image.",
+txtCreatedBy:"Created by",txtLicense:"MIT License",txtSource:"Source code",
+alertNoImage:"Upload at least one image first.",alertInvalidPaper:"Invalid paper configuration.",
+alertInvalidGrid:"Image grid is too small.",alertConfirmPages:"{n} pages will be generated. Continue?",
+alertTransparencyPng:"Transparent background requires PNG. Switched automatically.",alertTooBig:'Image "{name}" is too large.'},
+pt:{sub:"Envie imagens, divida o pôster em folhas e baixe um PDF pronto para imprimir.",
+titleImages:"Imagens",titlePaper:"Papel",titleLayout:"Layout do pôster",
+titleAdvanced:"Seção Avançada",titleSuper:"Seção Super Avançada",badgePrecision:"Precisão & Qualidade",
+imgNone:"Sem imagens carregadas",imgLoaded:"{n} imagem(ns) carregada(s)",imgError:"Não foi possível carregar as imagens.",imgMax:"Máximo de 500 imagens.",
+lblSheetSize:"Tamanho da folha",searchPlaceholder:"Buscar: A4, carta, 4x6, foto...",
+lblWidth:"Largura (mm)",lblHeight:"Altura (mm)",lblOrientation:"Orientação",optPortrait:"Retrato",optLandscape:"Paisagem",
+noResults:"Sem resultados",moreResults:"… e mais {n}",
+lblMode:"Modo",optByPages:"Por número de folhas",optBySize:"Por tamanho final",
+lblCols:"Colunas",lblRows:"Linhas",lblFinalW:"Largura final (cm)",lblFinalH:"Altura final (cm)",
+lblOverlap:"Sobreposição (mm)",noteOverlap:"Margem repetida nas bordas para colar sem cortar conteúdo.",
+lblMargins:"Margens individuais (mm)",lblTop:"Sup.",lblBottom:"Inf.",lblLeft:"Esq.",lblRight:"Dir.",
+lblCompose:"Composição de imagens",noteCompose:"1 imagem → cobre todo o pôster. Várias → grade.",
+lblImgCols:"Colunas img.",lblImgRows:"Linhas img.",lblCells:"Células:",lblGap:"Espaçamento (mm)",lblBorder:"Borda (mm)",
+lblFitCell:"Ajuste por célula",lblFitGlobal:"Ajuste global (1 img)",
+optCover:"Cobrir (corta)",optContain:"Conter (completa)",optStretch:"Esticar",
+lblBorderColor:"Cor da borda",lblBackground:"Fundo",lblColor:"Cor",lblTransparent:"Transparente",
+lblResolution:"Resolução (DPI)",lblFormat:"Formato",lblJpegQ:"Qualidade JPEG",lblCompression:"Compressão jsPDF",
+lblMarks:"Marcas de corte",lblThickness:"Espessura (pt)",lblLength:"Comprimento (mm)",lblMarksColor:"Cor",lblNumbers:"Numerar páginas",
+txtDownload:"Baixar PDF",txtDownloadN:"Baixar PDF · {n} folha(s) · {w} × {h} cm",
+txtPreview:"Pré-visualizar folhas",txtPreviewHide:"Ocultar pré-visualização",txtCancel:"Cancelar geração",
+titleTiles:"Pré-visualização de cada folha",tilesShowing:"Mostrando {shown} de {total} folhas. O PDF terá todas as {total}.",
+txtModalTitle:"Dê um nome à sua criação",txtModalDesc:"Será salvo como",placeholderName:"meu-poster",txtModalCancel:"Cancelar",txtModalOk:"Baixar PDF",
+previewName:"Será salvo como: {name}_poster.pdf",needName:"Digite um nome para continuar",
+statFinal:"Tamanho final real",statInches:"Polegadas",statPages:"Total de folhas",statImages:"Imagens",statCells:"Células de imagem",
+statArea:"Área imprimível",statResolution:"Resolução por folha",statQuality:"Qualidade da imagem",
+warnReduce:"Reduza as margens",warnMargins:"Margens muito grandes para este papel",cellFull:"1 (cobre pôster)",
+progGenerating:"Gerando folha {n} de {total}… ({pct}%)",progDone:"Pronto ({s}s). Baixando…",progCancelled:"Geração cancelada.",
+progError:"Erro: {msg}",progNoMemory:"O navegador não pôde processar a imagem.",
+txtCreatedBy:"Criado por",txtLicense:"Licença MIT",txtSource:"Código-fonte",
+alertNoImage:"Envie pelo menos uma imagem primeiro.",alertInvalidPaper:"Configuração de papel inválida.",
+alertInvalidGrid:"A grade de imagens é muito pequena.",alertConfirmPages:"Serão geradas {n} páginas. Continuar?",
+alertTransparencyPng:"Fundo transparente requer PNG.",alertTooBig:'A imagem "{name}" é muito grande.'},
+fr:{sub:"Importez des images, divisez l'affiche en feuilles et téléchargez un PDF prêt à imprimer.",
+titleImages:"Images",titlePaper:"Papier",titleLayout:"Mise en page",
+titleAdvanced:"Section Avancée",titleSuper:"Section Super Avancée",badgePrecision:"Précision & Qualité",
+imgNone:"Aucune image chargée",imgLoaded:"{n} image(s) chargée(s)",imgError:"Impossible de charger les images.",imgMax:"Maximum 500 images.",
+lblSheetSize:"Taille de feuille",searchPlaceholder:"Rechercher : A4, lettre, 4x6, photo...",
+lblWidth:"Largeur (mm)",lblHeight:"Hauteur (mm)",lblOrientation:"Orientation",optPortrait:"Portrait",optLandscape:"Paysage",
+noResults:"Aucun résultat",moreResults:"… et {n} de plus",
+lblMode:"Mode",optByPages:"Par nombre de feuilles",optBySize:"Par taille finale",
+lblCols:"Colonnes",lblRows:"Lignes",lblFinalW:"Largeur finale (cm)",lblFinalH:"Hauteur finale (cm)",
+lblOverlap:"Chevauchement (mm)",noteOverlap:"Marge répétée sur les bords pour coller sans couper le contenu.",
+lblMargins:"Marges individuelles (mm)",lblTop:"Haut",lblBottom:"Bas",lblLeft:"Gauche",lblRight:"Droite",
+lblCompose:"Composition d'images",noteCompose:"1 image → couvre toute l'affiche. Plusieurs → grille.",
+lblImgCols:"Colonnes img.",lblImgRows:"Lignes img.",lblCells:"Cellules :",lblGap:"Espacement (mm)",lblBorder:"Bordure (mm)",
+lblFitCell:"Ajustement par cellule",lblFitGlobal:"Ajustement global",
+optCover:"Couvrir (rogner)",optContain:"Contenir (complète)",optStretch:"Étirer",
+lblBorderColor:"Couleur de bordure",lblBackground:"Fond",lblColor:"Couleur",lblTransparent:"Transparent",
+lblResolution:"Résolution (PPP)",lblFormat:"Format",lblJpegQ:"Qualité JPEG",lblCompression:"Compression jsPDF",
+lblMarks:"Traits de coupe",lblThickness:"Épaisseur (pt)",lblLength:"Longueur (mm)",lblMarksColor:"Couleur",lblNumbers:"Numéroter les pages",
+txtDownload:"Télécharger PDF",txtDownloadN:"Télécharger PDF · {n} feuille(s) · {w} × {h} cm",
+txtPreview:"Aperçu des feuilles",txtPreviewHide:"Masquer l'aperçu",txtCancel:"Annuler la génération",
+titleTiles:"Aperçu de chaque feuille",tilesShowing:"Affichage de {shown} sur {total} feuilles. Le PDF aura toutes les {total}.",
+txtModalTitle:"Nommez votre création",txtModalDesc:"Sera enregistré sous",placeholderName:"mon-affiche",txtModalCancel:"Annuler",txtModalOk:"Télécharger PDF",
+previewName:"Sera enregistré sous : {name}_poster.pdf",needName:"Saisissez un nom pour continuer",
+statFinal:"Taille finale réelle",statInches:"Pouces",statPages:"Feuilles totales",statImages:"Images",statCells:"Cellules d'image",
+statArea:"Zone imprimable",statResolution:"Résolution par feuille",statQuality:"Qualité d'image",
+warnReduce:"Réduisez les marges",warnMargins:"Marges trop grandes pour ce papier",cellFull:"1 (couvre l'affiche)",
+progGenerating:"Génération feuille {n} sur {total}… ({pct}%)",progDone:"Terminé ({s}s). Téléchargement…",progCancelled:"Génération annulée.",
+progError:"Erreur : {msg}",progNoMemory:"Le navigateur n'a pas pu traiter l'image.",
+txtCreatedBy:"Créé par",txtLicense:"Licence MIT",txtSource:"Code source",
+alertNoImage:"Importez d'abord au moins une image.",alertInvalidPaper:"Configuration de papier invalide.",
+alertInvalidGrid:"La grille d'images est trop petite.",alertConfirmPages:"{n} pages seront générées. Continuer ?",
+alertTransparencyPng:"Le fond transparent nécessite PNG.",alertTooBig:'L\'image "{name}" est trop grande.'},
+de:{sub:"Bilder hochladen, Poster in Blätter aufteilen und druckfertige PDF herunterladen.",
+titleImages:"Bilder",titlePaper:"Papier",titleLayout:"Poster-Layout",
+titleAdvanced:"Erweiterte Sektion",titleSuper:"Super-Erweiterte Sektion",badgePrecision:"Präzision & Qualität",
+imgNone:"Keine Bilder geladen",imgLoaded:"{n} Bild(er) geladen",imgError:"Bilder konnten nicht geladen werden.",imgMax:"Maximal 500 Bilder.",
+lblSheetSize:"Blattgröße",searchPlaceholder:"Suchen: A4, Letter, 4x6, Foto...",
+lblWidth:"Breite (mm)",lblHeight:"Höhe (mm)",lblOrientation:"Ausrichtung",optPortrait:"Hochformat",optLandscape:"Querformat",
+noResults:"Keine Ergebnisse",moreResults:"… und {n} weitere",
+lblMode:"Modus",optByPages:"Nach Blattanzahl",optBySize:"Nach Endgröße",
+lblCols:"Spalten",lblRows:"Zeilen",lblFinalW:"Endbreite (cm)",lblFinalH:"Endhöhe (cm)",
+lblOverlap:"Überlappung (mm)",noteOverlap:"Wiederholter Rand zum Kleben ohne Inhaltsverlust.",
+lblMargins:"Individuelle Ränder (mm)",lblTop:"Oben",lblBottom:"Unten",lblLeft:"Links",lblRight:"Rechts",
+lblCompose:"Bildkomposition",noteCompose:"1 Bild → deckt das gesamte Poster ab. Mehrere → Raster.",
+lblImgCols:"Bildspalten",lblImgRows:"Bildzeilen",lblCells:"Zellen:",lblGap:"Abstand (mm)",lblBorder:"Rahmen (mm)",
+lblFitCell:"Anpassung pro Zelle",lblFitGlobal:"Globale Anpassung",
+optCover:"Füllen (zuschneiden)",optContain:"Einpassen (komplett)",optStretch:"Strecken",
+lblBorderColor:"Rahmenfarbe",lblBackground:"Hintergrund",lblColor:"Farbe",lblTransparent:"Transparent",
+lblResolution:"Auflösung (DPI)",lblFormat:"Format",lblJpegQ:"JPEG-Qualität",lblCompression:"jsPDF-Kompression",
+lblMarks:"Schnittmarken",lblThickness:"Dicke (pt)",lblLength:"Länge (mm)",lblMarksColor:"Farbe",lblNumbers:"Seitenzahlen",
+txtDownload:"PDF herunterladen",txtDownloadN:"PDF herunterladen · {n} Blatt · {w} × {h} cm",
+txtPreview:"Blätter-Vorschau",txtPreviewHide:"Vorschau ausblenden",txtCancel:"Generierung abbrechen",
+titleTiles:"Vorschau jedes Blattes",tilesShowing:"Zeige {shown} von {total} Blättern. Die PDF hat alle {total}.",
+txtModalTitle:"Benennen Sie Ihre Kreation",txtModalDesc:"Wird gespeichert als",placeholderName:"mein-poster",txtModalCancel:"Abbrechen",txtModalOk:"PDF herunterladen",
+previewName:"Wird gespeichert als: {name}_poster.pdf",needName:"Geben Sie einen Namen ein",
+statFinal:"Reale Endgröße",statInches:"Zoll",statPages:"Blätter gesamt",statImages:"Bilder",statCells:"Bildzellen",
+statArea:"Druckbereich",statResolution:"Auflösung pro Blatt",statQuality:"Bildqualität",
+warnReduce:"Ränder reduzieren",warnMargins:"Ränder zu groß für dieses Papier",cellFull:"1 (deckt Poster ab)",
+progGenerating:"Erzeuge Blatt {n} von {total}… ({pct}%)",progDone:"Fertig ({s}s). Download…",progCancelled:"Generierung abgebrochen.",
+progError:"Fehler: {msg}",progNoMemory:"Der Browser konnte das Bild nicht verarbeiten.",
+txtCreatedBy:"Erstellt von",txtLicense:"MIT-Lizenz",txtSource:"Quellcode",
+alertNoImage:"Laden Sie zuerst mindestens ein Bild hoch.",alertInvalidPaper:"Ungültige Papierkonfiguration.",
+alertInvalidGrid:"Das Bildraster ist zu klein.",alertConfirmPages:"{n} Seiten werden erstellt. Fortfahren?",
+alertTransparencyPng:"Transparenter Hintergrund erfordert PNG.",alertTooBig:'Das Bild "{name}" ist zu groß.'}};
 
 let LANG="en";
 function detectLang(){const l=(navigator.language||navigator.userLanguage||"en").toLowerCase().slice(0,2);return I18N[l]?l:"en";}
 function t(k,vars){let v=I18N[LANG]&&I18N[LANG][k];if(v==null)v=I18N.en[k]||k;
   if(typeof v==="string"&&vars)for(const key in vars)v=v.replace(new RegExp("\\{"+key+"\\}","g"),vars[key]);return v;}
+
+/* ═══ APLICAR TRADUCCIÓN por ID ═══ */
+function setText(id,key){const el=document.getElementById(id);if(el)el.textContent=t(key);}
+function setPlaceholder(id,key){const el=document.getElementById(id);if(el)el.placeholder=t(key);}
+function setOptText(id,key){const el=document.getElementById(id);if(el)el.textContent=t(key);}
+
 function applyLang(lang){
   LANG=I18N[lang]?lang:"en";document.documentElement.lang=LANG;
-  document.querySelectorAll("[data-i18n]").forEach(el=>{const k=el.getAttribute("data-i18n");if(k)el.textContent=t(k);});
-  document.querySelectorAll("[data-i18n-placeholder]").forEach(el=>{const k=el.getAttribute("data-i18n-placeholder");if(k)el.placeholder=t(k);});
-  document.title="PosterCraft • Free Poster Maker";els.langSelect.value=LANG;
-  if(typeof scheduleRender==="function")scheduleRender();}
+  setText("txtSub","sub");
+  setText("titleImages","titleImages");
+  setText("titlePaper","titlePaper");
+  setText("titleLayout","titleLayout");
+  setText("titleAdvanced","titleAdvanced");
+  setText("titleSuper","titleSuper");
+  setText("badgePrecision","badgePrecision");
+  setText("imgInfo",imagenes.length>0?"imgLoaded":"imgNone",imagenes.length?{n:imagenes.length}:undefined);
+  setText("lblSheetSize","lblSheetSize");
+  setPlaceholder("paperSearch","searchPlaceholder");
+  setText("lblWidth","lblWidth");
+  setText("lblHeight","lblHeight");
+  setText("lblOrientation","lblOrientation");
+  setOptText("optPortrait","optPortrait");
+  setOptText("optLandscape","optLandscape");
+  setText("lblMode","lblMode");
+  setOptText("optByPages","optByPages");
+  setOptText("optBySize","optBySize");
+  setText("lblCols","lblCols");
+  setText("lblRows","lblRows");
+  setText("lblFinalW","lblFinalW");
+  setText("lblFinalH","lblFinalH");
+  setText("lblOverlap","lblOverlap");
+  setText("noteOverlap","noteOverlap");
+  setText("lblMargins","lblMargins");
+  setText("lblTop","lblTop");
+  setText("lblBottom","lblBottom");
+  setText("lblLeft","lblLeft");
+  setText("lblRight","lblRight");
+  setText("lblCompose","lblCompose");
+  setText("noteCompose","noteCompose");
+  setText("lblImgCols","lblImgCols");
+  setText("lblImgRows","lblImgRows");
+  setText("lblCells","lblCells");
+  setText("lblGap","lblGap");
+  setText("lblBorder","lblBorder");
+  setText("lblFitCell","lblFitCell");
+  setText("lblFitGlobal","lblFitGlobal");
+  setOptText("optCellCover","optCover");
+  setOptText("optCellContain","optContain");
+  setOptText("optCellStretch","optStretch");
+  setOptText("optGlobalCover","optCover");
+  setOptText("optGlobalContain","optContain");
+  setOptText("optGlobalStretch","optStretch");
+  setText("lblBorderColor","lblBorderColor");
+  setText("lblBackground","lblBackground");
+  setText("lblColor","lblColor");
+  setText("lblTransparent","lblTransparent");
+  setText("lblResolution","lblResolution");
+  setText("lblFormat","lblFormat");
+  setText("lblJpegQ","lblJpegQ");
+  setText("lblCompression","lblCompression");
+  setText("lblMarks","lblMarks");
+  setText("lblThickness","lblThickness");
+  setText("lblLength","lblLength");
+  setText("lblMarksColor","lblMarksColor");
+  setText("lblNumbers","lblNumbers");
+  setText("txtDownload","txtDownload");
+  setText("txtPreview","txtPreview");
+  setText("txtCancel","txtCancel");
+  setText("titleTiles","titleTiles");
+  setText("txtModalTitle","txtModalTitle");
+  setText("txtModalDesc","txtModalDesc");
+  setPlaceholder("nombreInput","placeholderName");
+  setText("modalCancel","txtModalCancel");
+  setText("txtModalOk","txtModalOk");
+  setText("txtCreatedBy","txtCreatedBy");
+  setText("txtLicense","txtLicense");
+  setText("txtSource","txtSource");
+  document.title="PosterCraft • Free Poster Maker";
+  els.langSelect.value=LANG;
+  if(typeof scheduleRender==="function")scheduleRender();
+}
 
 const PAPELES={
 "A0 · 841 × 1189 mm":["paper","ISO A","Estándar mundial · gran formato",[841,1189]],
@@ -555,12 +634,12 @@ function renderPaperList(filtro){
   for(const key in PAPELES){const data=PAPELES[key];if(!data)continue;const [iconName,tipo,ref,mm]=data;
     const texto=(key+" "+tipo+" "+ref).toLowerCase();if(filtro&&texto.indexOf(filtro)===-1)continue;items.push({key,iconName,tipo,ref,mm});}
   const limit=60,visibles=items.slice(0,limit);
-  if(visibles.length===0){els.paperList.innerHTML='<div style="padding:14px;text-align:center;color:var(--dim);font-size:11.5px">'+t("sinResultados")+'</div>';return;}
+  if(visibles.length===0){els.paperList.innerHTML='<div style="padding:14px;text-align:center;color:var(--dim);font-size:11.5px">'+t("noResults")+'</div>';return;}
   let html="";
   for(const p of visibles){const partes=p.key.split(" · "),medida=partes[1]||p.key;
     const activo=p.key===els.papel.value?" active":"";const iconSvg=ICONS[p.iconName]||ICONS.paper;
     html+='<div class="paper-item'+activo+'" data-key="'+p.key+'"><span class="em">'+iconSvg+'</span><span class="main"><span class="medida">'+partes[0]+' · '+medida+'</span><span class="ref">'+p.ref+'</span></span><span class="tipo">'+p.tipo+'</span></div>';}
-  if(items.length>limit)html+='<div style="padding:8px;text-align:center;color:var(--dim);font-size:10.5px">'+t("masResultados",{n:items.length-limit})+'</div>';
+  if(items.length>limit)html+='<div style="padding:8px;text-align:center;color:var(--dim);font-size:10.5px">'+t("moreResults",{n:items.length-limit})+'</div>';
   els.paperList.innerHTML=html;
   els.paperList.querySelectorAll(".paper-item").forEach(el=>{
     el.addEventListener("mousedown",function(e){e.preventDefault();seleccionarPapel(this.getAttribute("data-key"));els.paperList.classList.remove("open");els.paperSearch.value="";});});}
@@ -633,11 +712,11 @@ function render(){
   els.finalWrap.classList.toggle("hidden",els.modo.value!=="final");
   els.solapeVal.textContent=els.solape.value;els.jpegQVal.textContent=els.jpegQ.value+"%";
   const esUnaImagen=imagenes.length===1;const ic=Math.max(1,+els.imgCols.value||1),ir=Math.max(1,+els.imgRows.value||1);
-  if(esUnaImagen){els.totalCeldas.textContent=t("celdaCompleta");}else{els.totalCeldas.textContent=ic*ir;}
+  if(esUnaImagen){els.totalCeldas.textContent=t("cellFull");}else{els.totalCeldas.textContent=ic*ir;}
   ["imgCols","imgRows","gap","borde","ajusteImg"].forEach(k=>{els[k].disabled=esUnaImagen;els[k].style.opacity=esUnaImagen?"0.5":"1";});
   const L=getLayout(),cv=els.preview,ctx=cv.getContext("2d");const fondo=els.transparente.checked?null:els.fondo.value;
   if(!L){cv.width=480;cv.height=90;ctx.fillStyle="#1e2430";ctx.fillRect(0,0,480,90);ctx.fillStyle="#ff5c5c";ctx.font="13px system-ui";ctx.textAlign="center";
-    ctx.fillText(t("avisoMargenesMsg"),240,50);els.info.innerHTML='<div class="stat"><span>'+t("avisoMargenes")+'</span><b class="bad">'+t("avisoMargenes")+'</b></div>';
+    ctx.fillText(t("warnMargins"),240,50);els.info.innerHTML='<div class="stat"><span>'+t("warnReduce")+'</span><b class="bad">'+t("warnReduce")+'</b></div>';
     els.btn.disabled=true;els.btnTiles.disabled=true;return;}
   const wrapW=Math.max(260,(cv.parentElement.clientWidth||700)-24);const s=Math.min(wrapW/L.posterW,460/L.posterH);
   cv.width=Math.max(1,Math.round(L.posterW*s));cv.height=Math.max(1,Math.round(L.posterH*s));cv.style.width=cv.width+"px";cv.style.height=cv.height+"px";
@@ -669,15 +748,15 @@ function render(){
     const ppi=Math.min(ppiW,ppiH);ppiTxt=Math.round(ppi)+" DPI";ppiCls=ppi<90?"bad":ppi<130?"warn":"ok";}
   els.info.innerHTML=
     '<div class="stat"><span>'+t("statFinal")+'</span><b>'+cmW+' × '+cmH+' cm</b></div>'+
-    '<div class="stat"><span>'+t("statPulgadas")+'</span><b class="small">'+inW+'″ × '+inH+'″</b></div>'+
-    '<div class="stat"><span>'+t("statHojas")+'</span><b>'+L.cols+' × '+L.rows+' = '+total+'</b></div>'+
-    '<div class="stat"><span>'+t("statImagenes")+'</span><b>'+imagenes.length+'</b></div>'+
-    '<div class="stat"><span>'+t("statCeldas")+'</span><b>'+(esUnaImagen?t("celdaCompleta"):ic+" × "+ir+" = "+(ic*ir))+'</b></div>'+
+    '<div class="stat"><span>'+t("statInches")+'</span><b class="small">'+inW+'″ × '+inH+'″</b></div>'+
+    '<div class="stat"><span>'+t("statPages")+'</span><b>'+L.cols+' × '+L.rows+' = '+total+'</b></div>'+
+    '<div class="stat"><span>'+t("statImages")+'</span><b>'+imagenes.length+'</b></div>'+
+    '<div class="stat"><span>'+t("statCells")+'</span><b>'+(esUnaImagen?t("cellFull"):ic+" × "+ir+" = "+(ic*ir))+'</b></div>'+
     '<div class="stat"><span>'+t("statArea")+'</span><b class="small">'+L.printableW.toFixed(0)+' × '+L.printableH.toFixed(0)+' mm</b></div>'+
-    '<div class="stat"><span>'+t("statResolucion")+'</span><b class="small">'+pxW+' × '+pxH+' px</b></div>'+
-    '<div class="stat"><span>'+t("statCalidad")+'</span><b class="'+ppiCls+'">'+ppiTxt+'</b></div>';
-  if(imagenes.length>0){els.btn.disabled=false;els.btnTiles.disabled=false;els.btn.querySelector("[data-i18n]").textContent=t("descargarPdfN",{n:total,w:cmW,h:cmH});}
-  else{els.btn.disabled=true;els.btnTiles.disabled=true;els.btn.querySelector("[data-i18n]").textContent=t("descargarPdf");}
+    '<div class="stat"><span>'+t("statResolution")+'</span><b class="small">'+pxW+' × '+pxH+' px</b></div>'+
+    '<div class="stat"><span>'+t("statQuality")+'</span><b class="'+ppiCls+'">'+ppiTxt+'</b></div>';
+  if(imagenes.length>0){els.btn.disabled=false;els.btnTiles.disabled=false;document.getElementById("txtDownload").textContent=t("txtDownloadN",{n:total,w:cmW,h:cmH});}
+  else{els.btn.disabled=true;els.btnTiles.disabled=true;document.getElementById("txtDownload").textContent=t("txtDownload");}
   if(!els.tilePreview.classList.contains("hidden")&&imagenes.length>0)generarMiniaturas();}
 
 function generarMiniaturas(){
@@ -701,7 +780,7 @@ function generarMiniaturas(){
     cl.fillText((idx+1)+"/"+total,25,12);els.tileGrid.appendChild(clone);}
   if(total>limit){const aviso=document.createElement("div");
     aviso.style.cssText="grid-column:1/-1;text-align:center;color:var(--dim);font-size:11px;padding:6px";
-    aviso.textContent=t("mostrandoHojas",{shown:limit,total});els.tileGrid.appendChild(aviso);}}
+    aviso.textContent=t("tilesShowing",{shown:limit,total});els.tileGrid.appendChild(aviso);}}
 
 function sanitizarNombre(s){return s.trim().replace(/[\\/:*?"<>|#%&{}$!'@`+=;,\[\]]+/g,"").replace(/\s+/g,"_").replace(/_+/g,"_").replace(/^[_.\-]+|[_.\-]+$/g,"").slice(0,60)||"poster";}
 function pedirNombre(){
@@ -709,7 +788,7 @@ function pedirNombre(){
     const ov=els.modalOverlay,inp=els.nombreInput,prev=els.previewName;
     inp.value=imgName||"mi-poster";prev.innerHTML="";ov.classList.remove("hidden");
     setTimeout(function(){inp.focus();inp.select();},30);
-    function update(){const v=inp.value.trim();if(v)prev.innerHTML=t("previewNombre",{name:sanitizarNombre(v)});else prev.innerHTML='<span style="color:var(--bad)">'+t("necesitaNombre")+'</span>';}
+    function update(){const v=inp.value.trim();if(v)prev.innerHTML=t("previewName",{name:sanitizarNombre(v)});else prev.innerHTML='<span style="color:var(--bad)">'+t("needName")+'</span>';}
     update();
     function cleanup(){ov.classList.add("hidden");els.modalOk.removeEventListener("click",onOk);els.modalCancel.removeEventListener("click",onCancel);inp.removeEventListener("keydown",onKey);inp.removeEventListener("input",onInput);}
     function onOk(){const v=inp.value.trim();if(!v){inp.focus();inp.style.borderColor="var(--bad)";return;}cleanup();resolve(sanitizarNombre(v));}
@@ -720,14 +799,14 @@ function pedirNombre(){
     inp.addEventListener("keydown",onKey);inp.addEventListener("input",onInput);});}
 
 function generarPDF(){
-  if(imagenes.length===0){alert(t("alertSinImagen"));return;}
-  for(const im of imagenes){if(im.naturalWidth>30000||im.naturalHeight>30000||im.naturalWidth*im.naturalHeight>250e6){alert(t("alertImagenGrande",{name:im.nombre||"?"}));return;}}
-  const L=getLayout();if(!L){alert(t("alertPapelInvalido"));return;}
-  const grid=getGridLayout(L);if(!grid){alert(t("alertCuadriculaInvalida"));return;}
-  const total=L.cols*L.rows;if(total>200&&!confirm(t("alertConfirmarPaginas",{n:total})))return;
-  if(els.transparente.checked&&els.formato.value==="jpeg"){els.formato.value="png";alert(t("alertTransparenciaPng"));}
+  if(imagenes.length===0){alert(t("alertNoImage"));return;}
+  for(const im of imagenes){if(im.naturalWidth>30000||im.naturalHeight>30000||im.naturalWidth*im.naturalHeight>250e6){alert(t("alertTooBig",{name:im.nombre||"?"}));return;}}
+  const L=getLayout();if(!L){alert(t("alertInvalidPaper"));return;}
+  const grid=getGridLayout(L);if(!grid){alert(t("alertInvalidGrid"));return;}
+  const total=L.cols*L.rows;if(total>200&&!confirm(t("alertConfirmPages",{n:total})))return;
+  if(els.transparente.checked&&els.formato.value==="jpeg"){els.formato.value="png";alert(t("alertTransparencyPng"));}
   pedirNombre().then(function(nombreFinal){ejecutarGeneracion(nombreFinal,L,grid,total);})
-    .catch(function(){els.prog.textContent=t("progCancelado");setTimeout(()=>els.prog.textContent="",2500);});}
+    .catch(function(){els.prog.textContent=t("progCancelled");setTimeout(()=>els.prog.textContent="",2500);});}
 function ejecutarGeneracion(nombreFinal,L,grid,total){
   cancelado=false;const jsPDF=window.jspdf.jsPDF;
   const maxSide=12000,maxArea=100e6;let dpi=+els.dpi.value;
@@ -749,8 +828,8 @@ function ejecutarGeneracion(nombreFinal,L,grid,total){
   function toBlob(c,type,q){return new Promise(r=>c.toBlob(r,type,q));}
   let n=0,r=0,c=0;
   function paso(){
-    if(cancelado){finalizar(t("progCancelado"),true);return;}
-    if(r>=L.rows){const secs=((performance.now()-t0)/1000).toFixed(1);els.prog.textContent=t("progListo",{s:secs});
+    if(cancelado){finalizar(t("progCancelled"),true);return;}
+    if(r>=L.rows){const secs=((performance.now()-t0)/1000).toFixed(1);els.prog.textContent=t("progDone",{s:secs});
       try{pdf.save(nombreFinal+"_poster.pdf");}catch(e){finalizar(t("progError",{msg:e.message}),true);return;}
       setTimeout(()=>{els.prog.textContent="";els.barWrap.style.display="none";},3500);finalizar(null,false);return;}
     try{
@@ -758,7 +837,7 @@ function ejecutarGeneracion(nombreFinal,L,grid,total){
       const tr=getTileRect(L,r,c,scale,pxW,pxH,masterW,masterH);
       tctx.drawImage(master,tr.sx,tr.sy,tr.sw,tr.sh,tr.dx,tr.dy,tr.dw,tr.dh);
       toBlob(tile,mime,jq).then(function(blob){
-        if(!blob){finalizar(t("progSinMemoria"),true);return;}
+        if(!blob){finalizar(t("progNoMemory"),true);return;}
         const url=URL.createObjectURL(blob);
         try{if(n>0)pdf.addPage(fmt,orient);pdf.addImage(url,mime==="image/png"?"PNG":"JPEG",L.mL,L.mT,L.printableW,L.printableH,undefined,comp);}finally{URL.revokeObjectURL(url);}
         if(els.marcas.checked&&Math.min(L.mL,L.mT,L.mR,L.mB)>=4){
@@ -770,7 +849,7 @@ function ejecutarGeneracion(nombreFinal,L,grid,total){
               pdf.line(e[0],e[1],e[0]+e[2]*len,e[1]);pdf.line(e[0],e[1],e[0],e[1]+e[3]*len);});}}
         if(els.numeros.checked&&L.mB>=5){pdf.setFontSize(8);pdf.setTextColor(140);pdf.text((n+1)+"/"+total,L.mL+L.printableW,L.mT+L.printableH+4,{align:"right"});}
         n++;const pct=Math.round(n/total*100);els.bar.style.width=pct+"%";
-        els.prog.textContent=t("progGenerando",{n:r*L.cols+c+1,total,pct});
+        els.prog.textContent=t("progGenerating",{n:r*L.cols+c+1,total,pct});
         c++;if(c>=L.cols){c=0;r++;}setTimeout(paso,0);});}
     catch(err){finalizar(t("progError",{msg:err.message}),true);}}
   function finalizar(msg,esError){
@@ -781,17 +860,17 @@ function ejecutarGeneracion(nombreFinal,L,grid,total){
 
 els.file.addEventListener("change",function(e){
   let files=Array.prototype.slice.call(e.target.files);if(files.length===0)return;
-  if(files.length>500){alert(t("maxImagenes"));files=files.slice(0,500);}
+  if(files.length>500){alert(t("imgMax"));files=files.slice(0,500);}
   imagenes=[];let errores=0,pendientes=files.length;const cargadas=[];
   function terminar(){
     imagenes=cargadas.filter(x=>x);
     if(imagenes.length>0){imgName=sanitizarNombre(imagenes[0].nombre.replace(/\.[^.]+$/,""));
-      let txt=t("nImagenes",{n:imagenes.length});if(errores>0)txt+=" · "+errores+" err";els.imgInfo.textContent=txt;
+      let txt=t("imgLoaded",{n:imagenes.length});if(errores>0)txt+=" · "+errores+" err";els.imgInfo.textContent=txt;
       let html="";const mostrar=Math.min(imagenes.length,20);
       for(let i=0;i<mostrar;i++){const im=imagenes[i];html+='<div><span class="name">'+im.nombre+'</span><span class="size">'+im.naturalWidth+'×'+im.naturalHeight+'</span></div>';}
       if(imagenes.length>20)html+='<div style="text-align:center;color:var(--dim);padding:4px">'+(imagenes.length-20)+'</div>';
       els.imgList.innerHTML=html;}
-    else{els.imgInfo.textContent=t("errImagenes");els.imgList.innerHTML="";}
+    else{els.imgInfo.textContent=t("imgError");els.imgList.innerHTML="";}
     render();}
   files.forEach(function(f,idx){
     const url=URL.createObjectURL(f),im=new Image();
@@ -803,8 +882,8 @@ document.querySelectorAll("input, select").forEach(function(el){el.addEventListe
 els.btn.addEventListener("click",generarPDF);
 els.btnTiles.addEventListener("click",function(){
   const visible=!els.tilePreview.classList.contains("hidden");
-  if(visible){els.tilePreview.classList.add("hidden");els.btnTiles.querySelector("[data-i18n]").textContent=t("verVistaPrevia");}
-  else{els.tilePreview.classList.remove("hidden");els.btnTiles.querySelector("[data-i18n]").textContent=t("ocultarVistaPrevia");generarMiniaturas();}});
+  if(visible){els.tilePreview.classList.add("hidden");document.getElementById("txtPreview").textContent=t("txtPreview");}
+  else{els.tilePreview.classList.remove("hidden");document.getElementById("txtPreview").textContent=t("txtPreviewHide");generarMiniaturas();}});
 els.btnCancel.addEventListener("click",function(){cancelado=true;});
 els.langSelect.addEventListener("change",function(){applyLang(this.value);});
 window.addEventListener("resize",scheduleRender);
