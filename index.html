@@ -44,6 +44,9 @@ main{padding:16px;display:flex;flex-direction:column;gap:12px;align-items:center
 .tile-grid{display:grid;gap:6px;margin-top:8px}.tile-grid canvas{width:100%;height:auto;border:1px solid var(--line);border-radius:4px;background:#000}
 button.go{width:100%;max-width:900px;background:linear-gradient(180deg,#5b95ff,#3d78e8);color:#fff;border:0;padding:13px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px}
 button.go:hover{filter:brightness(1.08)}button.go:disabled{opacity:.5;cursor:not-allowed}
+button.print{width:100%;max-width:900px;background:#2b3342;color:var(--txt);border:0;padding:11px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;margin-top:6px;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .15s}
+button.print:hover{background:#374151;color:var(--acc)}
+button.print:disabled{opacity:.5;cursor:not-allowed}
 button.ghost{width:100%;max-width:900px;background:#2b3342;color:var(--txt);border:0;padding:10px;border-radius:9px;font-size:12.5px;cursor:pointer;margin-top:6px;display:flex;align-items:center;justify-content:center;gap:8px}
 button.ghost:hover{background:#374151}
 .prog{font-size:11.5px;color:var(--dim);text-align:center;min-height:15px}
@@ -97,6 +100,24 @@ svg.ic-lg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;st
 .footer-btn svg.ic-fill{fill:currentColor;stroke:none}
 .footer-sep{width:1px;height:16px;background:var(--line)}
 @media(max-width:520px){.footer-sep{display:none}.footer{flex-direction:column;gap:8px}}
+
+/* ═══ POPUP DE IMPRESIÓN ═══ */
+.print-prompt-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:10000;padding:20px;opacity:0;pointer-events:none;transition:opacity .35s ease}
+.print-prompt-overlay.show{opacity:1;pointer-events:auto}
+.print-prompt{background:linear-gradient(160deg,#1a1f2e 0%,#161a22 100%);border:1px solid var(--line);border-radius:20px;padding:32px 26px 26px;max-width:440px;width:100%;box-shadow:0 30px 80px rgba(0,0,0,.8),0 0 80px rgba(79,140,255,.25);position:relative;transform:scale(.85) translateY(30px);transition:transform .45s cubic-bezier(.34,1.56,.64,1);text-align:center}
+.print-prompt-overlay.show .print-prompt{transform:scale(1) translateY(0)}
+.print-prompt-close{position:absolute;top:14px;right:14px;width:36px;height:36px;border-radius:50%;background:#0d1017;border:1px solid var(--line);color:var(--dim);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.print-prompt-close:hover{background:#2b3342;color:var(--txt);transform:rotate(90deg) scale(1.05)}
+.print-prompt-close svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round}
+.print-prompt-icon{width:88px;height:88px;margin:0 auto 18px;background:linear-gradient(135deg,#5b95ff,#39d98a);border-radius:26px;display:flex;align-items:center;justify-content:center;animation:pulseIcon 2.2s ease-in-out infinite;box-shadow:0 10px 30px rgba(79,140,255,.45)}
+.print-prompt-icon svg{width:48px;height:48px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@keyframes pulseIcon{0%,100%{transform:scale(1);box-shadow:0 10px 30px rgba(79,140,255,.45)}50%{transform:scale(1.08);box-shadow:0 18px 50px rgba(79,140,255,.7)}}
+.print-prompt h3{margin:0 0 10px;font-size:20px;font-weight:800;letter-spacing:-.02em;background:linear-gradient(135deg,#5b95ff,#39d98a);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+.print-prompt p{margin:0 0 22px;color:var(--dim);font-size:13.5px;line-height:1.6}
+.print-prompt button.print-now{width:100%;background:linear-gradient(135deg,#5b95ff,#39d98a);color:#fff;border:0;padding:15px;border-radius:12px;font-size:14.5px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .18s;letter-spacing:.02em;box-shadow:0 6px 20px rgba(79,140,255,.35)}
+.print-prompt button.print-now:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(79,140,255,.55);filter:brightness(1.05)}
+.print-prompt button.print-now:active{transform:translateY(0)}
+.print-prompt button.print-now svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 </style>
 </head>
 <body>
@@ -205,6 +226,9 @@ svg.ic-lg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;st
 <button class="go" id="btnPdf" disabled>
 <svg class="ic-lg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 7v8"/><path d="M8.5 11.5L12 15l3.5-3.5"/></svg>
 <span id="txtDownload">Descargar PDF</span></button>
+<button class="print" id="btnPrint" disabled>
+<svg class="ic" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+<span id="txtPrint">Imprimir PDF</span></button>
 <button class="ghost" id="btnTiles" disabled>
 <svg class="ic" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
 <span id="txtPreview">Ver vista previa de hojas</span></button>
@@ -241,6 +265,7 @@ MeowDev1011</a></span>
 </main>
 </div>
 
+<!-- Modal de nombre -->
 <div class="modal-overlay hidden" id="modalOverlay"><div class="modal">
 <h2><svg class="ic-lg" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg><span id="txtModalTitle">Ponle nombre a tu creación</span></h2>
 <p><span id="txtModalDesc">Se guardará como</span> <code>{nombre}_poster.pdf</code></p>
@@ -252,6 +277,24 @@ MeowDev1011</a></span>
 <svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 7v8"/><path d="M8.5 11.5L12 15l3.5-3.5"/></svg>
 <span id="txtModalOk">Descargar PDF</span></button></div>
 </div></div>
+
+<!-- Popup de impresión post-descarga -->
+<div class="print-prompt-overlay" id="printPrompt">
+<div class="print-prompt">
+<button class="print-prompt-close" id="printPromptClose" title="Cerrar">
+<svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+</button>
+<div class="print-prompt-icon">
+<svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+</div>
+<h3 id="ppTitle">¿Cansado de imprimir?</h3>
+<p id="ppText">Solo lo hacemos por ti. Toca el botón y lo imprimimos en tu impresora.</p>
+<button class="print-now" id="ppPrintBtn">
+<svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+<span id="ppPrintText">Imprimir ahora</span>
+</button>
+</div>
+</div>
 
 <script>
 /* ═══ SVG ICONS ═══ */
@@ -293,10 +336,12 @@ lblBorderColor:"Color de borde",lblBackground:"Fondo",lblColor:"Color",lblTransp
 lblResolution:"Resolución (PPP)",lblFormat:"Formato",lblJpegQ:"Calidad JPEG",lblCompression:"Compresión jsPDF",
 lblMarks:"Marcas de corte",lblThickness:"Grosor (pt)",lblLength:"Longitud (mm)",lblMarksColor:"Color",lblNumbers:"Numerar páginas",
 txtDownload:"Descargar PDF",txtDownloadN:"Descargar PDF · {n} hoja(s) · {w} × {h} cm",
+txtPrint:"Imprimir PDF",progPrinting:"Abriendo diálogo de impresión…",
 txtPreview:"Ver vista previa de hojas",txtPreviewHide:"Ocultar vista previa",txtCancel:"Cancelar generación",
 titleTiles:"Vista previa de cada hoja del PDF",tilesShowing:"Mostrando {shown} de {total} hojas. El PDF tendrá las {total}.",
 txtModalTitle:"Ponle nombre a tu creación",txtModalDesc:"Se guardará como",placeholderName:"mi-poster",txtModalCancel:"Cancelar",txtModalOk:"Descargar PDF",
 previewName:"Se guardará como: {name}_poster.pdf",needName:"Escribe un nombre para continuar",
+ppTitle:"¿Cansado de imprimir?",ppText:"Solo lo hacemos por ti. Toca el botón y lo imprimimos en tu impresora.",ppPrintText:"Imprimir ahora",
 statFinal:"Tamaño final real",statInches:"Pulgadas",statPages:"Hojas totales",statImages:"Imágenes",statCells:"Celdas de imagen",
 statArea:"Área imprimible",statResolution:"Resolución por hoja",statQuality:"Calidad de imagen",
 warnReduce:"Reduce los márgenes",warnMargins:"Márgenes demasiado grandes para este papel",cellFull:"1 (cubre póster)",
@@ -325,10 +370,12 @@ lblBorderColor:"Border color",lblBackground:"Background",lblColor:"Color",lblTra
 lblResolution:"Resolution (DPI)",lblFormat:"Format",lblJpegQ:"JPEG quality",lblCompression:"jsPDF compression",
 lblMarks:"Crop marks",lblThickness:"Thickness (pt)",lblLength:"Length (mm)",lblMarksColor:"Color",lblNumbers:"Page numbers",
 txtDownload:"Download PDF",txtDownloadN:"Download PDF · {n} sheet(s) · {w} × {h} cm",
+txtPrint:"Print PDF",progPrinting:"Opening print dialog…",
 txtPreview:"Preview sheets",txtPreviewHide:"Hide preview",txtCancel:"Cancel generation",
 titleTiles:"Preview of each PDF sheet",tilesShowing:"Showing {shown} of {total} sheets. The PDF will have all {total}.",
 txtModalTitle:"Name your creation",txtModalDesc:"Will be saved as",placeholderName:"my-poster",txtModalCancel:"Cancel",txtModalOk:"Download PDF",
 previewName:"Will be saved as: {name}_poster.pdf",needName:"Type a name to continue",
+ppTitle:"Tired of printing?",ppText:"We do it for you. Just tap the button and we print it on your printer.",ppPrintText:"Print now",
 statFinal:"Final real size",statInches:"Inches",statPages:"Total sheets",statImages:"Images",statCells:"Image cells",
 statArea:"Printable area",statResolution:"Resolution per sheet",statQuality:"Image quality",
 warnReduce:"Reduce margins",warnMargins:"Margins too large for this paper",cellFull:"1 (covers poster)",
@@ -357,10 +404,12 @@ lblBorderColor:"Cor da borda",lblBackground:"Fundo",lblColor:"Cor",lblTransparen
 lblResolution:"Resolução (DPI)",lblFormat:"Formato",lblJpegQ:"Qualidade JPEG",lblCompression:"Compressão jsPDF",
 lblMarks:"Marcas de corte",lblThickness:"Espessura (pt)",lblLength:"Comprimento (mm)",lblMarksColor:"Cor",lblNumbers:"Numerar páginas",
 txtDownload:"Baixar PDF",txtDownloadN:"Baixar PDF · {n} folha(s) · {w} × {h} cm",
+txtPrint:"Imprimir PDF",progPrinting:"Abrindo diálogo de impressão…",
 txtPreview:"Pré-visualizar folhas",txtPreviewHide:"Ocultar pré-visualização",txtCancel:"Cancelar geração",
 titleTiles:"Pré-visualização de cada folha",tilesShowing:"Mostrando {shown} de {total} folhas. O PDF terá todas as {total}.",
 txtModalTitle:"Dê um nome à sua criação",txtModalDesc:"Será salvo como",placeholderName:"meu-poster",txtModalCancel:"Cancelar",txtModalOk:"Baixar PDF",
 previewName:"Será salvo como: {name}_poster.pdf",needName:"Digite um nome para continuar",
+ppTitle:"Cansado de imprimir?",ppText:"Nós fazemos por você. Basta tocar no botão e imprimimos na sua impressora.",ppPrintText:"Imprimir agora",
 statFinal:"Tamanho final real",statInches:"Polegadas",statPages:"Total de folhas",statImages:"Imagens",statCells:"Células de imagem",
 statArea:"Área imprimível",statResolution:"Resolução por folha",statQuality:"Qualidade da imagem",
 warnReduce:"Reduza as margens",warnMargins:"Margens muito grandes para este papel",cellFull:"1 (cobre pôster)",
@@ -389,10 +438,12 @@ lblBorderColor:"Couleur de bordure",lblBackground:"Fond",lblColor:"Couleur",lblT
 lblResolution:"Résolution (PPP)",lblFormat:"Format",lblJpegQ:"Qualité JPEG",lblCompression:"Compression jsPDF",
 lblMarks:"Traits de coupe",lblThickness:"Épaisseur (pt)",lblLength:"Longueur (mm)",lblMarksColor:"Couleur",lblNumbers:"Numéroter les pages",
 txtDownload:"Télécharger PDF",txtDownloadN:"Télécharger PDF · {n} feuille(s) · {w} × {h} cm",
+txtPrint:"Imprimer PDF",progPrinting:"Ouverture de la boîte d'impression…",
 txtPreview:"Aperçu des feuilles",txtPreviewHide:"Masquer l'aperçu",txtCancel:"Annuler la génération",
 titleTiles:"Aperçu de chaque feuille",tilesShowing:"Affichage de {shown} sur {total} feuilles. Le PDF aura toutes les {total}.",
 txtModalTitle:"Nommez votre création",txtModalDesc:"Sera enregistré sous",placeholderName:"mon-affiche",txtModalCancel:"Annuler",txtModalOk:"Télécharger PDF",
 previewName:"Sera enregistré sous : {name}_poster.pdf",needName:"Saisissez un nom pour continuer",
+ppTitle:"Fatigué d'imprimer ?",ppText:"Nous le faisons pour vous. Appuyez sur le bouton et nous l'imprimons sur votre imprimante.",ppPrintText:"Imprimer maintenant",
 statFinal:"Taille finale réelle",statInches:"Pouces",statPages:"Feuilles totales",statImages:"Images",statCells:"Cellules d'image",
 statArea:"Zone imprimable",statResolution:"Résolution par feuille",statQuality:"Qualité d'image",
 warnReduce:"Réduisez les marges",warnMargins:"Marges trop grandes pour ce papier",cellFull:"1 (couvre l'affiche)",
@@ -421,10 +472,12 @@ lblBorderColor:"Rahmenfarbe",lblBackground:"Hintergrund",lblColor:"Farbe",lblTra
 lblResolution:"Auflösung (DPI)",lblFormat:"Format",lblJpegQ:"JPEG-Qualität",lblCompression:"jsPDF-Kompression",
 lblMarks:"Schnittmarken",lblThickness:"Dicke (pt)",lblLength:"Länge (mm)",lblMarksColor:"Farbe",lblNumbers:"Seitenzahlen",
 txtDownload:"PDF herunterladen",txtDownloadN:"PDF herunterladen · {n} Blatt · {w} × {h} cm",
+txtPrint:"PDF drucken",progPrinting:"Öffne Druckdialog…",
 txtPreview:"Blätter-Vorschau",txtPreviewHide:"Vorschau ausblenden",txtCancel:"Generierung abbrechen",
 titleTiles:"Vorschau jedes Blattes",tilesShowing:"Zeige {shown} von {total} Blättern. Die PDF hat alle {total}.",
 txtModalTitle:"Benennen Sie Ihre Kreation",txtModalDesc:"Wird gespeichert als",placeholderName:"mein-poster",txtModalCancel:"Abbrechen",txtModalOk:"PDF herunterladen",
 previewName:"Wird gespeichert als: {name}_poster.pdf",needName:"Geben Sie einen Namen ein",
+ppTitle:"Müde vom Drucken?",ppText:"Wir machen das für Sie. Tippen Sie auf den Button und wir drucken es auf Ihrem Drucker.",ppPrintText:"Jetzt drucken",
 statFinal:"Reale Endgröße",statInches:"Zoll",statPages:"Blätter gesamt",statImages:"Bilder",statCells:"Bildzellen",
 statArea:"Druckbereich",statResolution:"Auflösung pro Blatt",statQuality:"Bildqualität",
 warnReduce:"Ränder reduzieren",warnMargins:"Ränder zu groß für dieses Papier",cellFull:"1 (deckt Poster ab)",
@@ -440,7 +493,6 @@ function detectLang(){const l=(navigator.language||navigator.userLanguage||"en")
 function t(k,vars){let v=I18N[LANG]&&I18N[LANG][k];if(v==null)v=I18N.en[k]||k;
   if(typeof v==="string"&&vars)for(const key in vars)v=v.replace(new RegExp("\\{"+key+"\\}","g"),vars[key]);return v;}
 
-/* ═══ APLICAR TRADUCCIÓN por ID ═══ */
 function setText(id,key){const el=document.getElementById(id);if(el)el.textContent=t(key);}
 function setPlaceholder(id,key){const el=document.getElementById(id);if(el)el.placeholder=t(key);}
 function setOptText(id,key){const el=document.getElementById(id);if(el)el.textContent=t(key);}
@@ -505,6 +557,7 @@ function applyLang(lang){
   setText("lblMarksColor","lblMarksColor");
   setText("lblNumbers","lblNumbers");
   setText("txtDownload","txtDownload");
+  setText("txtPrint","txtPrint");
   setText("txtPreview","txtPreview");
   setText("txtCancel","txtCancel");
   setText("titleTiles","titleTiles");
@@ -516,6 +569,9 @@ function applyLang(lang){
   setText("txtCreatedBy","txtCreatedBy");
   setText("txtLicense","txtLicense");
   setText("txtSource","txtSource");
+  setText("ppTitle","ppTitle");
+  setText("ppText","ppText");
+  setText("ppPrintText","ppPrintText");
   document.title="PosterCraft • Free Poster Maker";
   els.langSelect.value=LANG;
   if(typeof scheduleRender==="function")scheduleRender();
@@ -626,7 +682,7 @@ ajuste:$('ajuste'),fondo:$('fondo'),transparente:$('transparente'),
 dpi:$('dpi'),formato:$('formato'),jpegQ:$('jpegQ'),jpegQVal:$('jpegQVal'),compresion:$('compresion'),
 marcas:$('marcas'),marcasGrosor:$('marcasGrosor'),marcasLong:$('marcasLong'),marcasColor:$('marcasColor'),
 numeros:$('numeros'),info:$('info'),preview:$('preview'),tilePreview:$('tilePreview'),tileGrid:$('tileGrid'),
-btn:$('btnPdf'),btnTiles:$('btnTiles'),btnCancel:$('btnCancel'),prog:$('prog'),barWrap:$('barWrap'),bar:$('bar'),
+btn:$('btnPdf'),btnPrint:$('btnPrint'),btnTiles:$('btnTiles'),btnCancel:$('btnCancel'),prog:$('prog'),barWrap:$('barWrap'),bar:$('bar'),
 modalOverlay:$('modalOverlay'),nombreInput:$('nombreInput'),previewName:$('previewName'),modalOk:$('modalOk'),modalCancel:$('modalCancel')};
 
 function renderPaperList(filtro){
@@ -652,7 +708,7 @@ els.paperSearch.addEventListener("focus",function(){renderPaperList(this.value);
 els.paperSearch.addEventListener("input",function(){renderPaperList(this.value);els.paperList.classList.add("open");});
 els.paperSearch.addEventListener("blur",function(){setTimeout(function(){els.paperList.classList.remove("open");},180);});
 
-let imagenes=[],imgName="poster",cancelado=false,rafId=null;
+let imagenes=[],imgName="poster",cancelado=false,rafId=null,modoImpresion=false;
 
 function getLayout(){
   const data=PAPELES[els.papel.value];let pw,ph;
@@ -717,7 +773,7 @@ function render(){
   const L=getLayout(),cv=els.preview,ctx=cv.getContext("2d");const fondo=els.transparente.checked?null:els.fondo.value;
   if(!L){cv.width=480;cv.height=90;ctx.fillStyle="#1e2430";ctx.fillRect(0,0,480,90);ctx.fillStyle="#ff5c5c";ctx.font="13px system-ui";ctx.textAlign="center";
     ctx.fillText(t("warnMargins"),240,50);els.info.innerHTML='<div class="stat"><span>'+t("warnReduce")+'</span><b class="bad">'+t("warnReduce")+'</b></div>';
-    els.btn.disabled=true;els.btnTiles.disabled=true;return;}
+    els.btn.disabled=true;els.btnPrint.disabled=true;els.btnTiles.disabled=true;return;}
   const wrapW=Math.max(260,(cv.parentElement.clientWidth||700)-24);const s=Math.min(wrapW/L.posterW,460/L.posterH);
   cv.width=Math.max(1,Math.round(L.posterW*s));cv.height=Math.max(1,Math.round(L.posterH*s));cv.style.width=cv.width+"px";cv.style.height=cv.height+"px";
   if(fondo){ctx.fillStyle=fondo;ctx.fillRect(0,0,cv.width,cv.height);}else{ctx.clearRect(0,0,cv.width,cv.height);}
@@ -755,8 +811,8 @@ function render(){
     '<div class="stat"><span>'+t("statArea")+'</span><b class="small">'+L.printableW.toFixed(0)+' × '+L.printableH.toFixed(0)+' mm</b></div>'+
     '<div class="stat"><span>'+t("statResolution")+'</span><b class="small">'+pxW+' × '+pxH+' px</b></div>'+
     '<div class="stat"><span>'+t("statQuality")+'</span><b class="'+ppiCls+'">'+ppiTxt+'</b></div>';
-  if(imagenes.length>0){els.btn.disabled=false;els.btnTiles.disabled=false;document.getElementById("txtDownload").textContent=t("txtDownloadN",{n:total,w:cmW,h:cmH});}
-  else{els.btn.disabled=true;els.btnTiles.disabled=true;document.getElementById("txtDownload").textContent=t("txtDownload");}
+  if(imagenes.length>0){els.btn.disabled=false;els.btnPrint.disabled=false;els.btnTiles.disabled=false;document.getElementById("txtDownload").textContent=t("txtDownloadN",{n:total,w:cmW,h:cmH});}
+  else{els.btn.disabled=true;els.btnPrint.disabled=true;els.btnTiles.disabled=true;document.getElementById("txtDownload").textContent=t("txtDownload");}
   if(!els.tilePreview.classList.contains("hidden")&&imagenes.length>0)generarMiniaturas();}
 
 function generarMiniaturas(){
@@ -798,6 +854,16 @@ function pedirNombre(){
     els.modalOk.addEventListener("click",onOk);els.modalCancel.addEventListener("click",onCancel);
     inp.addEventListener("keydown",onKey);inp.addEventListener("input",onInput);});}
 
+/* ═══ POPUP DE IMPRESIÓN ═══ */
+function mostrarPrintPrompt(){
+  const p=document.getElementById("printPrompt");
+  if(p)p.classList.add("show");
+}
+function cerrarPrintPrompt(){
+  const p=document.getElementById("printPrompt");
+  if(p)p.classList.remove("show");
+}
+
 function generarPDF(){
   if(imagenes.length===0){alert(t("alertNoImage"));return;}
   for(const im of imagenes){if(im.naturalWidth>30000||im.naturalHeight>30000||im.naturalWidth*im.naturalHeight>250e6){alert(t("alertTooBig",{name:im.nombre||"?"}));return;}}
@@ -807,6 +873,13 @@ function generarPDF(){
   if(els.transparente.checked&&els.formato.value==="jpeg"){els.formato.value="png";alert(t("alertTransparencyPng"));}
   pedirNombre().then(function(nombreFinal){ejecutarGeneracion(nombreFinal,L,grid,total);})
     .catch(function(){els.prog.textContent=t("progCancelled");setTimeout(()=>els.prog.textContent="",2500);});}
+
+function imprimirPDF(){
+  if(imagenes.length===0){alert(t("alertNoImage"));return;}
+  modoImpresion=true;
+  generarPDF();
+}
+
 function ejecutarGeneracion(nombreFinal,L,grid,total){
   cancelado=false;const jsPDF=window.jspdf.jsPDF;
   const maxSide=12000,maxArea=100e6;let dpi=+els.dpi.value;
@@ -823,15 +896,31 @@ function ejecutarGeneracion(nombreFinal,L,grid,total){
   const pdf=new jsPDF({unit:"mm",format:fmt,orientation:orient,compress:true});
   pdf.setProperties({title:nombreFinal+"_poster",creator:"PosterCraft • Free Poster Maker",author:"MeowDev1011"});
   const mime=els.formato.value==="png"?"image/png":"image/jpeg";const jq=(+els.jpegQ.value||95)/100;const comp=els.compresion.value||"SLOW";
-  els.btn.disabled=true;els.btnTiles.disabled=true;els.btnCancel.style.display="flex";els.barWrap.style.display="block";els.bar.style.width="0%";
+  els.btn.disabled=true;els.btnPrint.disabled=true;els.btnTiles.disabled=true;els.btnCancel.style.display="flex";els.barWrap.style.display="block";els.bar.style.width="0%";
   const t0=performance.now();
   function toBlob(c,type,q){return new Promise(r=>c.toBlob(r,type,q));}
   let n=0,r=0,c=0;
   function paso(){
     if(cancelado){finalizar(t("progCancelled"),true);return;}
-    if(r>=L.rows){const secs=((performance.now()-t0)/1000).toFixed(1);els.prog.textContent=t("progDone",{s:secs});
-      try{pdf.save(nombreFinal+"_poster.pdf");}catch(e){finalizar(t("progError",{msg:e.message}),true);return;}
-      setTimeout(()=>{els.prog.textContent="";els.barWrap.style.display="none";},3500);finalizar(null,false);return;}
+    if(r>=L.rows){
+      const secs=((performance.now()-t0)/1000).toFixed(1);
+      els.prog.textContent=t("progDone",{s:secs});
+      try{
+        if(modoImpresion){
+          els.prog.textContent=t("progPrinting");
+          pdf.autoPrint();
+          var blobUrl=pdf.output("bloburl");
+          window.open(blobUrl,"_blank");
+          modoImpresion=false;
+          setTimeout(function(){els.prog.textContent="";els.barWrap.style.display="none";},3500);
+        }else{
+          pdf.save(nombreFinal+"_poster.pdf");
+          setTimeout(function(){els.prog.textContent="";els.barWrap.style.display="none";},3500);
+          setTimeout(mostrarPrintPrompt,900);
+        }
+      }catch(e){finalizar(t("progError",{msg:e.message}),true);return;}
+      finalizar(null,false);return;
+    }
     try{
       if(fondo){tctx.fillStyle=fondo;tctx.fillRect(0,0,pxW,pxH);}else{tctx.clearRect(0,0,pxW,pxH);}
       const tr=getTileRect(L,r,c,scale,pxW,pxH,masterW,masterH);
@@ -854,7 +943,7 @@ function ejecutarGeneracion(nombreFinal,L,grid,total){
     catch(err){finalizar(t("progError",{msg:err.message}),true);}}
   function finalizar(msg,esError){
     if(msg){els.prog.textContent=msg;if(esError)setTimeout(()=>els.barWrap.style.display="none",3000);}
-    els.btn.disabled=false;els.btnTiles.disabled=false;els.btnCancel.style.display="none";
+    els.btn.disabled=false;els.btnPrint.disabled=false;els.btnTiles.disabled=false;els.btnCancel.style.display="none";
     master.width=0;master.height=0;tile.width=0;tile.height=0;render();}
   paso();}
 
@@ -880,12 +969,22 @@ els.file.addEventListener("change",function(e){
 
 document.querySelectorAll("input, select").forEach(function(el){el.addEventListener("input",scheduleRender);el.addEventListener("change",scheduleRender);});
 els.btn.addEventListener("click",generarPDF);
+els.btnPrint.addEventListener("click",imprimirPDF);
 els.btnTiles.addEventListener("click",function(){
   const visible=!els.tilePreview.classList.contains("hidden");
   if(visible){els.tilePreview.classList.add("hidden");document.getElementById("txtPreview").textContent=t("txtPreview");}
   else{els.tilePreview.classList.remove("hidden");document.getElementById("txtPreview").textContent=t("txtPreviewHide");generarMiniaturas();}});
 els.btnCancel.addEventListener("click",function(){cancelado=true;});
 els.langSelect.addEventListener("change",function(){applyLang(this.value);});
+
+/* Eventos del popup */
+document.getElementById("printPromptClose").addEventListener("click",cerrarPrintPrompt);
+document.getElementById("printPrompt").addEventListener("click",function(e){if(e.target===this)cerrarPrintPrompt();});
+document.getElementById("ppPrintBtn").addEventListener("click",function(){
+  cerrarPrintPrompt();
+  setTimeout(imprimirPDF,300);
+});
+
 window.addEventListener("resize",scheduleRender);
 
 LANG=detectLang();
