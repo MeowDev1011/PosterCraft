@@ -54,6 +54,23 @@ Everything runs **100% in the browser**. No server, no uploads, no tracking. You
 - **Square sizes** for social media
 - **Posters, plafonds, billboards**
 - **Custom dimensions** (any width × height in mm)
+### 💾 Export & Print
+- **Real physical size** on the PDF (A4 stays A4, 4×6 stays 4×6)
+- **Required name dialog** before download — output saved as `{yourname}_poster.pdf`
+- **Filename sanitization** (safe for all operating systems)
+- **Cancel button** during generation
+- **Progress bar** with real-time percentage
+
+### 🖨️ One-click printing
+- **Print directly** from the browser — no need to open the PDF manually
+- Uses the **native browser print dialog** (`window.print()` via jsPDF `autoPrint()`)
+- Works on Chrome, Edge, Firefox, and Safari
+- Pick printer, paper size, orientation, and scale from the system dialog
+- **Animated post-download prompt** appears after each successful download:
+  > *"Tired of printing? We do it for you. Just tap the button and we print it on your printer."*
+- **One click** on "Print now" opens the print dialog instantly
+- **Close with X** — dismiss the prompt and return to the app
+- Fully translated into all 5 languages
 
 ### 🧩 Smart layout
 - **Two modes**:
